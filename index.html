@@ -109,6 +109,17 @@ svg { width:100%; height:auto; display:block; }
 .plate-idx { color:var(--ink3); font-weight:700; font-size:14px; }
 .plate-tag { font-size:13.5px; color:var(--ink2); line-height:1.4; }
 .plate-int { font-size:11.5px; color:var(--ink3); font-variant-numeric:tabular-nums; margin-top:2px; }
+.howgrid { display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:12px; margin:22px 0 26px; }
+.howcard { background:var(--card); border:1px solid var(--rule); border-radius:16px;
+  padding:16px 16px 12px; box-shadow:var(--sh1); border-top:4px solid var(--rule); }
+.howcard.hc1 { border-top-color:var(--g2); }
+.howcard.hc2 { border-top-color:var(--y2); }
+.howcard.hc3 { border-top-color:var(--r2); }
+.hc-title { font-weight:800; font-size:16px; margin-bottom:10px; }
+.chips { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:10px; }
+.chip { font-size:12.5px; font-weight:600; color:var(--ink2); background:var(--paper);
+  border:1px solid var(--rule); border-radius:999px; padding:3px 10px; }
+.hc-verdict { font-size:13.5px; line-height:1.45; color:var(--ink2); margin:0; }
 .arglist { counter-reset:arg; margin:18px 0 0; padding:0; list-style:none; }
 .arglist>li { position:relative; padding-left:64px; margin-bottom:26px; }
 .arglist>li::before { counter-increment:arg; content:counter(arg);
@@ -306,6 +317,48 @@ Click a dot — or search — for its rank, score and what drives it. Ctrl/⌘-s
 <p class="figcap">The number beside each city is its index; the interval is where it lands in 90%
 of 2,000 re-runs of the method with perturbed assumptions.</p>
 
+
+<div class="prose">
+<h2>How a street gets its score</h2>
+<p>Underneath the city ranking is a score for every public road in 31 countries —
+67&nbsp;million of them. A street is scored on how it is actually built and used:
+its speed limit (including the legal default where none is signed), how much car
+traffic our model estimates it carries, how many lanes it has, whether heavy trucks
+are allowed, whether there is a protected bike track or just paint, how it is lit
+and surfaced, and what it forces a rider to do at junctions and crossings. All of it
+is read from open map data and our own data layers — no surveys, no opinions.</p>
+</div>
+
+<div class="howgrid">
+<div class="howcard hc1"><div class="hc-title">The quiet side street</div>
+<div class="chips"><span class="chip">30 km/h</span><span class="chip">protected track</span>
+<span class="chip">calm traffic</span><span class="chip">no trucks</span></div>
+<p class="hc-verdict v1">Scores at the safe end — the kind of street a network should be made of.</p></div>
+<div class="howcard hc2"><div class="hc-title">The ordinary high street</div>
+<div class="chips"><span class="chip">50 km/h</span><span class="chip">painted lane, at best</span>
+<span class="chip">steady traffic</span><span class="chip">parked cars</span></div>
+<p class="hc-verdict v2">The middle of the scale — rideable, but it depends on the rider being careful.</p></div>
+<div class="howcard hc3"><div class="hc-title">The urban arterial</div>
+<div class="chips"><span class="chip">2×2 lanes</span><span class="chip">heavy traffic</span>
+<span class="chip">trucks allowed</span><span class="chip">nothing for bikes</span></div>
+<p class="hc-verdict v3">The risky end — where the serious injuries concentrate.</p></div>
+</div>
+
+<div class="prose">
+<p>Does the score mean anything? We checked it against reality: <b>4&nbsp;billion
+measured bicycle passages</b> and 1,169 serious injuries across 13 European regions.
+On streets our model puts at the risky extreme, riders are seriously hurt roughly
+<b>twice as often per ride</b> as on the streets it calls safe. It is also not an
+academic exercise — the same score plans safer routes in the Defensive Pedal app
+every day.</p>
+<p>The exact weights are proprietary — they are the product. The ingredients and
+their directions are not: slower is safer, separation is safer, traffic and trucks
+are not. And a city cannot lobby its way up the table — the score only moves when
+the street does.</p>
+<p>A city's rank is then just its streets, added up three ways: how risky the
+network is per kilometre, how risky 210 typical journeys through it are, and how
+much of daily life is reachable on connected low-stress streets.</p>
+</div>
 <div class="prose">
 <h2>Five results that will start arguments</h2>
 <ol class="arglist">
@@ -662,7 +715,7 @@ Index 2025 — EIT Urban Mobility Edition</a>.</p>
   if (sc) sc.querySelectorAll(".pt").forEach(function (d, i) { d.style.setProperty("--i", i); });
 
   // reveal groups with sibling stagger
-  var groups = [".plates .plate", ".arglist > li", ".tiles .tile", ".caveat"];
+  var groups = [".plates .plate", ".howgrid .howcard", ".arglist > li", ".tiles .tile", ".caveat"];
   groups.forEach(function (sel) {
     document.querySelectorAll(sel).forEach(function (el, i) {
       el.classList.add("reveal");
