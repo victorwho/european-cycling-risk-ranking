@@ -81,7 +81,8 @@ h3 { font-size:18px; font-weight:700; margin:34px 0 6px; }
 p { margin:0 0 14px; }
 .figure { margin:26px 0 8px; }
 .figcap { font-size:13px; color:var(--ink3); margin:6px 0 0; line-height:1.5; }
-svg { width:100%; height:auto; display:block; }
+.figure svg { width:100%; height:auto; display:block; }
+.storebtns svg { flex:none; }
 .bar.s1-0 { fill:var(--g0); } .bar.s1-1 { fill:var(--g1); } .bar.s1-2 { fill:var(--g2); } .bar.s1-3 { fill:var(--g3); }
 .bar.s2-0 { fill:var(--y0); } .bar.s2-1 { fill:var(--y1); } .bar.s2-2 { fill:var(--y2); } .bar.s2-3 { fill:var(--y3); }
 .bar.s3-0 { fill:var(--r0); } .bar.s3-1 { fill:var(--r1); } .bar.s3-2 { fill:var(--r2); } .bar.s3-3 { fill:var(--r3); }
@@ -167,6 +168,33 @@ tr.grp td { font-weight:800; padding-top:22px; border-bottom:2px solid var(--ink
   font-size:13.5px; color:var(--ink3); line-height:1.6; }
 .foot a, .prose a { color:inherit; text-underline-offset:3px; transition:color var(--tt); }
 .foot a:hover, .prose a:hover { color:var(--hot-ink); }
+.storebtns { display:flex; flex-wrap:wrap; gap:8px; }
+.storebtns a { display:inline-flex; align-items:center; justify-content:center; gap:8px;
+  background:var(--navy); color:#FAFAF7; text-decoration:none; font-weight:700;
+  font-size:14px; padding:10px 16px; border-radius:10px; min-height:44px;
+  transition:background var(--tt), transform var(--tt); }
+.storebtns a:hover { background:#000; }
+.storebtns a:active { transform:scale(.98); }
+.appcta { display:flex; align-items:center; justify-content:space-between; gap:20px;
+  flex-wrap:wrap; background:var(--brand); border-radius:16px; padding:20px 22px;
+  margin:30px 0; box-shadow:var(--sh2); }
+.appcta-txt { max-width:520px; }
+.appcta-h { font-weight:800; font-size:19px; color:#15151F; margin-bottom:4px; letter-spacing:-.01em; }
+.appcta p { margin:0; font-size:14.5px; color:#3C3C50; line-height:1.5; }
+#cta { position:fixed; right:14px; bottom:max(16px, env(safe-area-inset-bottom, 0px));
+  z-index:20; background:var(--brand); border-radius:12px; box-shadow:var(--sh2);
+  width:min(260px, calc(100vw - 28px)); font-family:var(--font); }
+#cta-head { display:flex; align-items:center; justify-content:space-between; width:100%;
+  background:none; border:0; cursor:pointer; font:inherit; font-weight:800;
+  font-size:14.5px; color:#15151F; padding:12px 14px; }
+#cta-chev { font-size:11px; color:#7a6200; padding-left:8px; transition:transform var(--tt)}
+#cta.closed #cta-chev { transform:rotate(180deg); }
+#cta.closed #cta-body { display:none; }
+#cta-body { padding:0 14px 13px; }
+#cta-body p { margin:0 0 12px; font-size:13px; color:#1a1a1a; line-height:1.45; }
+#cta .storebtns { flex-direction:column; }
+#cta .storebtns a { width:100%; }
+@media (max-width:640px) { .appcta { flex-direction:column; align-items:flex-start; } }
 #tip { position:fixed; pointer-events:none; background:var(--navy); color:#FAFAF7;
   font-family:var(--font); font-size:12.5px; padding:7px 10px; border-radius:10px;
   line-height:1.4; opacity:0; transition:opacity .1s; z-index:9; max-width:260px;
@@ -459,6 +487,15 @@ perturbed weights and goalposts behind every rank. The interval printed next to 
 where it lands in 90% of them.</div></div>
 </div>
 
+
+<div class="appcta reveal-cta">
+  <div class="appcta-txt">
+    <div class="appcta-h">Don&rsquo;t just read the ranking &mdash; ride it.</div>
+    <p>Defensive Pedal plans bike routes that minimize risk, using the exact same
+    score behind this page. Free on iOS and Android.</p>
+  </div>
+  <div class="storebtns"><a href="https://apps.apple.com/ro/app/defensive-pedal/id6778694757" target="_blank" rel="noopener"><svg width="16" height="19" viewBox="0 0 384 512" fill="currentColor" aria-hidden="true"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/></svg> App Store</a><a href="https://play.google.com/store/apps/details?id=com.defensivepedal.mobile" target="_blank" rel="noopener"><svg width="17" height="19" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg> Google Play</a></div>
+</div>
 <div class="prose">
 <div class="caveat"><b>What we won't claim.</b> Two cities with overlapping intervals are a tie —
 read the intervals, not just the places: Stockholm's #1 means "top of the leading cluster", not
@@ -711,6 +748,17 @@ Index 2025 — EIT Urban Mobility Edition</a>.</p>
 </div>
 </div>
 
+
+<div id="cta" hidden>
+  <button id="cta-head" aria-expanded="true">
+    <span>Get Defensive Pedal</span><span id="cta-chev">&#9662;</span>
+  </button>
+  <div id="cta-body">
+    <p>Ride on routes that minimize risk with <strong>Defensive Pedal</strong>&nbsp;&mdash;
+    the app that uses this same safety algorithm.</p>
+    <div class="storebtns"><a href="https://apps.apple.com/ro/app/defensive-pedal/id6778694757" target="_blank" rel="noopener"><svg width="16" height="19" viewBox="0 0 384 512" fill="currentColor" aria-hidden="true"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/></svg> App Store</a><a href="https://play.google.com/store/apps/details?id=com.defensivepedal.mobile" target="_blank" rel="noopener"><svg width="17" height="19" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg> Google Play</a></div>
+  </div>
+</div>
 <div id="tip"></div>
 <script>
 (function () {
@@ -753,7 +801,7 @@ Index 2025 — EIT Urban Mobility Edition</a>.</p>
   if (sc) sc.querySelectorAll(".pt").forEach(function (d, i) { d.style.setProperty("--i", i); });
 
   // reveal groups with sibling stagger
-  var groups = [".plates .plate", ".howgrid .howcard", ".dims .dimcard", ".arglist > li", ".tiles .tile", ".caveat"];
+  var groups = [".plates .plate", ".howgrid .howcard", ".dims .dimcard", ".arglist > li", ".tiles .tile", ".appcta", ".caveat"];
   groups.forEach(function (sel) {
     document.querySelectorAll(sel).forEach(function (el, i) {
       el.classList.add("reveal");
@@ -798,6 +846,37 @@ Index 2025 — EIT Urban Mobility Edition</a>.</p>
     requestAnimationFrame(frame);
   }
   document.querySelectorAll(".tile .big").forEach(function (el) { io.observe(el); });
+})();
+</script>
+
+<script>
+(function () {
+  var cta = document.getElementById("cta");
+  if (!cta) return;
+  var KEY = "dpCtaOpen";
+  var open = sessionStorage.getItem(KEY) !== "0";
+  function apply() {
+    cta.classList.toggle("closed", !open);
+    document.getElementById("cta-head").setAttribute("aria-expanded", open ? "true" : "false");
+  }
+  apply();
+  document.getElementById("cta-head").addEventListener("click", function () {
+    open = !open;
+    try { sessionStorage.setItem(KEY, open ? "1" : "0"); } catch (e) {}
+    apply();
+  });
+  // appear after the reader has actually engaged (one screen of scroll)
+  var shown = false;
+  function maybeShow() {
+    if (shown) return;
+    if (window.scrollY > window.innerHeight * 0.8) {
+      shown = true;
+      cta.hidden = false;
+      window.removeEventListener("scroll", maybeShow);
+    }
+  }
+  window.addEventListener("scroll", maybeShow, { passive: true });
+  maybeShow();
 })();
 </script>
 
