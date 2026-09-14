@@ -1,0 +1,496 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Streets, Not Reputations</title>
+<meta name="description" content="219 European cities ranked by cycling risk, measured from 67 million road segments and validated against 1,169 serious injuries. Stockholm first, Amsterdam 9th — and where the famous rankings disagree, the injury data picks a side.">
+<link rel="canonical" href="https://victorwho.github.io/european-cycling-risk-ranking/">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Streets, Not Reputations">
+<meta property="og:description" content="219 European cities ranked by cycling risk, measured from 67 million road segments and validated against 1,169 serious injuries. Stockholm first, Amsterdam 9th — and where the famous rankings disagree, the injury data picks a side.">
+<meta property="og:url" content="https://victorwho.github.io/european-cycling-risk-ranking/">
+<meta property="og:image" content="https://victorwho.github.io/european-cycling-risk-ranking/social-card.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Streets, Not Reputations">
+<meta name="twitter:description" content="219 European cities ranked by cycling risk, measured from 67 million road segments and validated against 1,169 serious injuries. Stockholm first, Amsterdam 9th — and where the famous rankings disagree, the injury data picks a side.">
+<meta name="twitter:image" content="https://victorwho.github.io/european-cycling-risk-ranking/social-card.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..100,400..900&family=Source+Serif+4:ital,opsz,wght@0,8..60,400..600;1,8..60,400&display=swap">
+<style>img{max-width:100%}</style>
+</head>
+<body>
+
+
+
+<style>
+:root {
+  --paper:#F7F8F6; --ink:#1B2629; --ink2:#46585E; --ink3:#6E7F84;
+  --rule:#DCE2E0; --card:#FFFFFF;
+  --t1:#97C0D4; --t2:#4E8FAD; --t3:#1E556E;
+  --hot:#C4542A; --hot-ink:#A34018;
+  --plate-ink:#F7F8F6;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper:#131C20; --ink:#E4ECEE; --ink2:#A7B8BD; --ink3:#7E9096;
+    --rule:#2A3A40; --card:#1A262B;
+    --t1:#9FD4EC; --t2:#5E9FBE; --t3:#35708D;
+    --hot:#E07A4D; --hot-ink:#E9905F;
+    --plate-ink:#0E1518;
+  }
+}
+:root[data-theme="dark"] {
+  --paper:#131C20; --ink:#E4ECEE; --ink2:#A7B8BD; --ink3:#7E9096;
+  --rule:#2A3A40; --card:#1A262B;
+  --t1:#9FD4EC; --t2:#5E9FBE; --t3:#35708D;
+  --hot:#E07A4D; --hot-ink:#E9905F;
+  --plate-ink:#0E1518;
+}
+body { background:var(--paper); color:var(--ink); margin:0;
+  font-family:"Source Serif 4", Georgia, serif; font-size:17px; line-height:1.62; }
+.wrap { max-width:960px; margin:0 auto; padding-block:0 64px; padding-inline:20px; }
+.prose { max-width:680px; }
+h1,h2,h3,.arc { font-family:Archivo, "Helvetica Neue", Arial, sans-serif; }
+.eyebrow { font-family:Archivo,sans-serif; font-size:12px; font-weight:700;
+  letter-spacing:.14em; text-transform:uppercase; color:var(--ink3); margin:52px 0 14px; }
+h1 { font-size:clamp(40px,7.5vw,72px); line-height:.98; margin:0 0 18px;
+  font-weight:900; font-stretch:80%; letter-spacing:-.015em; text-wrap:balance; }
+.dek { font-size:clamp(18px,2.4vw,21px); line-height:1.5; color:var(--ink2); max-width:640px; margin:0 0 8px; }
+.dek b { color:var(--ink); }
+h2 { font-size:clamp(24px,3.4vw,32px); font-weight:800; font-stretch:85%;
+  letter-spacing:-.01em; margin:64px 0 10px; text-wrap:balance; }
+h3 { font-size:19px; font-weight:700; margin:34px 0 6px; }
+p { margin:0 0 14px; }
+.figure { margin:26px 0 8px; }
+.figcap { font-family:Archivo,sans-serif; font-size:13px; color:var(--ink3); margin:6px 0 0; line-height:1.5; }
+svg { width:100%; height:auto; display:block; }
+.bar.t1 { fill:var(--t1); } .bar.t2 { fill:var(--t2); } .bar.t3 { fill:var(--t3); }
+.bar:hover { opacity:.75; }
+.axis { stroke:var(--rule); stroke-width:1.2; }
+.grid { stroke:var(--rule); stroke-width:.8; }
+.lbl { font-family:Archivo,sans-serif; font-size:11.5px; fill:var(--ink3); }
+.lbl-tick { stroke:var(--ink3); stroke-width:1; }
+.axis-lbl { font-weight:700; }
+.legend { display:flex; flex-wrap:wrap; gap:18px; margin-top:10px;
+  font-family:Archivo,sans-serif; font-size:13px; color:var(--ink2); }
+.legend .sw { display:inline-block; width:11px; height:11px; border-radius:2px;
+  margin-right:6px; vertical-align:-1px; }
+.plates { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:10px; margin:24px 0 4px; }
+.plate { display:flex; gap:14px; align-items:center; background:var(--card);
+  border:1px solid var(--rule); border-radius:10px; padding:12px 14px; }
+.plate-rank { font-family:Archivo,sans-serif; font-weight:900; font-stretch:75%;
+  font-size:30px; min-width:58px; height:58px; border-radius:9px;
+  display:flex; align-items:center; justify-content:center; color:var(--plate-ink);
+  font-variant-numeric:tabular-nums; }
+.t1bg { background:var(--t2); } .t2bg { background:var(--t2); } .t3bg { background:var(--t3); }
+.plate-city { font-family:Archivo,sans-serif; font-weight:800; font-size:17.5px;
+  display:flex; align-items:baseline; gap:8px; }
+.plate-idx { color:var(--ink3); font-weight:700; font-size:14px; }
+.plate-tag { font-size:14px; color:var(--ink2); line-height:1.4; font-style:italic; }
+.plate-int { font-family:Archivo,sans-serif; font-size:11.5px; color:var(--ink3);
+  font-variant-numeric:tabular-nums; margin-top:2px; }
+.arglist { counter-reset:arg; margin:18px 0 0; padding:0; list-style:none; }
+.arglist>li { position:relative; padding-left:64px; margin-bottom:26px; }
+.arglist>li::before { counter-increment:arg; content:counter(arg);
+  position:absolute; left:0; top:2px; font-family:Archivo,sans-serif;
+  font-weight:900; font-stretch:75%; font-size:34px; color:var(--t2); width:48px;
+  text-align:right; line-height:1; }
+.arglist b { font-family:Archivo,sans-serif; font-weight:800; font-size:17px; }
+.hotword { color:var(--hot-ink); font-weight:600; }
+.pt { fill:var(--t2); opacity:.9; } .pt.hot { fill:var(--hot); opacity:1; }
+.pt:hover { opacity:.65; }
+.diag { stroke:var(--ink3); stroke-width:1; stroke-dasharray:5 5; opacity:.7; }
+.diag-lbl { font-style:italic; }
+.plbl { font-family:Archivo,sans-serif; font-size:12px; font-weight:700; fill:var(--ink2); }
+.plbl-hot { fill:var(--hot-ink); }
+.tiles { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:10px; margin:24px 0; }
+.tile { background:var(--card); border:1px solid var(--rule); border-radius:10px; padding:18px 18px 14px; }
+.tile .big { font-family:Archivo,sans-serif; font-weight:900; font-stretch:80%;
+  font-size:40px; line-height:1; font-variant-numeric:tabular-nums; }
+.tile .what { font-family:Archivo,sans-serif; font-size:13px; color:var(--ink2); margin-top:8px; line-height:1.45; }
+.caveat { border-left:3px solid var(--hot); padding:4px 0 4px 18px; margin:28px 0; color:var(--ink2); font-size:15.5px; }
+.caveat b { color:var(--ink); font-family:Archivo,sans-serif; }
+table { border-collapse:collapse; width:100%; font-family:Archivo,sans-serif; font-size:14.5px; }
+.tblwrap { overflow-x:auto; margin-top:18px; }
+th,td { padding:5px 10px; border-bottom:1px solid var(--rule); text-align:left; }
+thead th { font-size:11.5px; text-transform:uppercase; letter-spacing:.08em; color:var(--ink3); }
+td.r { text-align:right; font-variant-numeric:tabular-nums; }
+td.ci { color:var(--ink3); font-size:13px; }
+tr.grp td { font-weight:800; padding-top:22px; border-bottom:2px solid var(--ink2); font-size:13px;
+  text-transform:uppercase; letter-spacing:.07em; }
+.foot { margin-top:56px; padding-top:18px; border-top:1px solid var(--rule);
+  font-family:Archivo,sans-serif; font-size:13.5px; color:var(--ink3); line-height:1.6; }
+.foot a, .prose a { color:inherit; text-underline-offset:3px; }
+#tip { position:fixed; pointer-events:none; background:var(--ink); color:var(--paper);
+  font-family:Archivo,sans-serif; font-size:12.5px; padding:7px 10px; border-radius:6px;
+  line-height:1.4; opacity:0; transition:opacity .1s; z-index:9; max-width:260px; }
+#tip b { display:block; }
+@media (max-width:520px) { .arglist>li { padding-left:0; } .arglist>li::before { position:static; display:block; text-align:left; margin-bottom:2px; } }
+</style>
+
+<div class="wrap">
+<p class="eyebrow">Defensive Pedal Research · European Cycling Risk Ranking · 2026</p>
+<h1>Streets, Not&nbsp;Reputations</h1>
+<p class="dek">We scored <b>67&nbsp;million road segments</b> across <b>219 European cities</b> with a
+risk model validated against 1,169 serious cycling injuries — then ranked every city, 1st to last.
+No votes. No policy points. Just the streets as they are built.</p>
+
+<div class="figure"><svg viewBox="0 0 940 240" role="img" aria-label="Index value for all 219 cities, ranked, coloured by tier"><rect class="bar t1" x="8.00" y="33.52" width="3.72" height="172.48" data-n="1. Stockholm" data-v="index 98 · interval 1–7"/><rect class="bar t1" x="12.22" y="35.28" width="3.72" height="170.72" data-n="2. Helsinki" data-v="index 97 · interval 1–9"/><rect class="bar t1" x="16.44" y="36.34" width="3.72" height="169.66" data-n="3. Antwerp" data-v="index 96 · interval 2–13"/><rect class="bar t1" x="20.66" y="36.51" width="3.72" height="169.49" data-n="4. Haarlem" data-v="index 96 · interval 1–11"/><rect class="bar t1" x="24.88" y="36.69" width="3.72" height="169.31" data-n="5. Leiden" data-v="index 96 · interval 3–13"/><rect class="bar t1" x="29.10" y="36.69" width="3.72" height="169.31" data-n="6. Vantaa" data-v="index 96 · interval 2–10"/><rect class="bar t1" x="33.32" y="38.80" width="3.72" height="167.20" data-n="7. The Hague" data-v="index 95 · interval 4–18"/><rect class="bar t1" x="37.53" y="39.33" width="3.72" height="166.67" data-n="8. Espoo" data-v="index 95 · interval 3–14"/><rect class="bar t1" x="41.75" y="40.21" width="3.72" height="165.79" data-n="9. Amsterdam" data-v="index 94 · interval 5–17"/><rect class="bar t1" x="45.97" y="41.97" width="3.72" height="164.03" data-n="10. Barcelona" data-v="index 93 · interval 6–19"/><rect class="bar t1" x="50.19" y="42.32" width="3.72" height="163.68" data-n="11. Paris" data-v="index 93 · interval 5–16"/><rect class="bar t1" x="54.41" y="43.20" width="3.72" height="162.80" data-n="12. Tampere" data-v="index 92 · interval 4–17"/><rect class="bar t1" x="58.63" y="43.38" width="3.72" height="162.62" data-n="13. Eindhoven" data-v="index 92 · interval 9–23"/><rect class="bar t1" x="62.85" y="44.43" width="3.72" height="161.57" data-n="14. Utrecht" data-v="index 92 · interval 11–22"/><rect class="bar t1" x="67.07" y="45.31" width="3.72" height="160.69" data-n="15. Brussels" data-v="index 91 · interval 3–23"/><rect class="bar t1" x="71.29" y="46.19" width="3.72" height="159.81" data-n="16. Rotterdam" data-v="index 91 · interval 14–24"/><rect class="bar t1" x="75.51" y="49.36" width="3.72" height="156.64" data-n="17. Copenhagen" data-v="index 89 · interval 8–28"/><rect class="bar t1" x="79.73" y="49.71" width="3.72" height="156.29" data-n="18. San Sebastián" data-v="index 89 · interval 17–29"/><rect class="bar t1" x="83.95" y="50.42" width="3.72" height="155.58" data-n="19. Turku" data-v="index 88 · interval 6–24"/><rect class="bar t1" x="88.16" y="51.65" width="3.72" height="154.35" data-n="20. Hanover" data-v="index 88 · interval 18–28"/><rect class="bar t1" x="92.38" y="53.06" width="3.72" height="152.94" data-n="21. Munich" data-v="index 87 · interval 20–33"/><rect class="bar t1" x="96.60" y="53.94" width="3.72" height="152.06" data-n="22. Bremen" data-v="index 86 · interval 18–36"/><rect class="bar t1" x="100.82" y="55.52" width="3.72" height="150.48" data-n="23. Ghent" data-v="index 86 · interval 21–37"/><rect class="bar t1" x="105.04" y="57.98" width="3.72" height="148.02" data-n="24. Braunschweig" data-v="index 84 · interval 23–36"/><rect class="bar t1" x="109.26" y="58.51" width="3.72" height="147.49" data-n="25. Bilbao" data-v="index 84 · interval 13–44"/><rect class="bar t1" x="113.48" y="58.86" width="3.72" height="147.14" data-n="26. Almere" data-v="index 84 · interval 11–36"/><rect class="bar t1" x="117.70" y="58.86" width="3.72" height="147.14" data-n="27. Lyon" data-v="index 84 · interval 13–38"/><rect class="bar t1" x="121.92" y="59.39" width="3.72" height="146.61" data-n="28. Lübeck" data-v="index 83 · interval 24–40"/><rect class="bar t1" x="126.14" y="60.62" width="3.72" height="145.38" data-n="29. Groningen" data-v="index 83 · interval 26–37"/><rect class="bar t1" x="130.36" y="60.98" width="3.72" height="145.02" data-n="30. Montpellier" data-v="index 82 · interval 25–42"/><rect class="bar t1" x="134.58" y="61.50" width="3.72" height="144.50" data-n="31. Toulouse" data-v="index 82 · interval 27–44"/><rect class="bar t1" x="138.79" y="65.20" width="3.72" height="140.80" data-n="32. Grenoble" data-v="index 80 · interval 27–48"/><rect class="bar t1" x="143.01" y="65.90" width="3.72" height="140.10" data-n="33. Tilburg" data-v="index 80 · interval 31–46"/><rect class="bar t1" x="147.23" y="66.78" width="3.72" height="139.22" data-n="34. Strasbourg" data-v="index 79 · interval 22–55"/><rect class="bar t1" x="151.45" y="66.96" width="3.72" height="139.04" data-n="35. Nantes" data-v="index 79 · interval 27–52"/><rect class="bar t1" x="155.67" y="67.66" width="3.72" height="138.34" data-n="36. Málaga" data-v="index 79 · interval 30–50"/><rect class="bar t1" x="159.89" y="67.84" width="3.72" height="138.16" data-n="37. Münster" data-v="index 78 · interval 34–49"/><rect class="bar t1" x="164.11" y="68.19" width="3.72" height="137.81" data-n="38. Malmö" data-v="index 78 · interval 12–57"/><rect class="bar t1" x="168.33" y="68.72" width="3.72" height="137.28" data-n="39. Seville" data-v="index 78 · interval 24–55"/><rect class="bar t1" x="172.55" y="68.72" width="3.72" height="137.28" data-n="40. Bologna" data-v="index 78 · interval 18–49"/><rect class="bar t1" x="176.77" y="69.07" width="3.72" height="136.93" data-n="41. Valencia" data-v="index 78 · interval 15–67"/><rect class="bar t1" x="180.99" y="71.01" width="3.72" height="134.99" data-n="42. Tours" data-v="index 77 · interval 32–65"/><rect class="bar t1" x="185.21" y="71.54" width="3.72" height="134.46" data-n="43. Valladolid" data-v="index 76 · interval 37–60"/><rect class="bar t1" x="189.42" y="72.06" width="3.72" height="133.94" data-n="44. Freiburg" data-v="index 76 · interval 37–58"/><rect class="bar t1" x="193.64" y="72.77" width="3.72" height="133.23" data-n="45. Vitoria-Gasteiz" data-v="index 76 · interval 39–56"/><rect class="bar t1" x="197.86" y="73.12" width="3.72" height="132.88" data-n="46. Sabadell" data-v="index 76 · interval 24–69"/><rect class="bar t1" x="202.08" y="74.00" width="3.72" height="132.00" data-n="47. Zaragoza" data-v="index 75 · interval 44–56"/><rect class="bar t1" x="206.30" y="74.18" width="3.72" height="131.82" data-n="48. Duisburg" data-v="index 75 · interval 38–62"/><rect class="bar t1" x="210.52" y="75.76" width="3.72" height="130.24" data-n="49. Vienna" data-v="index 74 · interval 36–77"/><rect class="bar t1" x="214.74" y="76.11" width="3.72" height="129.89" data-n="50. Palma" data-v="index 74 · interval 48–59"/><rect class="bar t1" x="218.96" y="76.46" width="3.72" height="129.54" data-n="51. Berlin" data-v="index 74 · interval 37–63"/><rect class="bar t1" x="223.18" y="76.46" width="3.72" height="129.54" data-n="52. Mannheim" data-v="index 74 · interval 40–73"/><rect class="bar t1" x="227.40" y="76.82" width="3.72" height="129.18" data-n="53. Pamplona" data-v="index 73 · interval 45–72"/><rect class="bar t1" x="231.62" y="79.63" width="3.72" height="126.37" data-n="54. Oulu" data-v="index 72 · interval 10–81"/><rect class="bar t1" x="235.84" y="79.81" width="3.72" height="126.19" data-n="55. Córdoba" data-v="index 72 · interval 44–70"/><rect class="bar t1" x="240.05" y="80.86" width="3.72" height="125.14" data-n="56. Lille" data-v="index 71 · interval 51–79"/><rect class="bar t1" x="244.27" y="81.92" width="3.72" height="124.08" data-n="57. Bonn" data-v="index 70 · interval 43–87"/><rect class="bar t1" x="248.49" y="81.92" width="3.72" height="124.08" data-n="58. Düsseldorf" data-v="index 70 · interval 55–73"/><rect class="bar t1" x="252.71" y="82.45" width="3.72" height="123.55" data-n="59. Magdeburg" data-v="index 70 · interval 55–77"/><rect class="bar t1" x="256.93" y="82.62" width="3.72" height="123.38" data-n="60. Maribor" data-v="index 70 · interval 47–73"/><rect class="bar t1" x="261.15" y="82.62" width="3.72" height="123.38" data-n="61. Trondheim" data-v="index 70 · interval 46–73"/><rect class="bar t1" x="265.37" y="82.98" width="3.72" height="123.02" data-n="62. Oslo" data-v="index 70 · interval 40–81"/><rect class="bar t1" x="269.59" y="83.68" width="3.72" height="122.32" data-n="63. Graz" data-v="index 70 · interval 53–80"/><rect class="bar t1" x="273.81" y="83.86" width="3.72" height="122.14" data-n="64. Augsburg" data-v="index 69 · interval 54–74"/><rect class="bar t1" x="278.03" y="84.56" width="3.72" height="121.44" data-n="65. Nancy" data-v="index 69 · interval 38–108"/><rect class="bar t1" x="282.25" y="85.26" width="3.72" height="120.74" data-n="66. Odense" data-v="index 69 · interval 23–89"/><rect class="bar t1" x="286.47" y="85.79" width="3.72" height="120.21" data-n="67. Kiel" data-v="index 68 · interval 62–82"/><rect class="bar t1" x="290.68" y="85.79" width="3.72" height="120.21" data-n="68. Szeged" data-v="index 68 · interval 63–75"/><rect class="bar t1" x="294.90" y="85.97" width="3.72" height="120.03" data-n="69. Elche" data-v="index 68 · interval 65–76"/><rect class="bar t1" x="299.12" y="86.50" width="3.72" height="119.50" data-n="70. Gijón" data-v="index 68 · interval 48–84"/><rect class="bar t1" x="303.34" y="87.38" width="3.72" height="118.62" data-n="71. Cologne" data-v="index 67 · interval 61–91"/><rect class="bar t1" x="307.56" y="87.73" width="3.72" height="118.27" data-n="72. Aarhus" data-v="index 67 · interval 43–90"/><rect class="bar t1" x="311.78" y="88.08" width="3.72" height="117.92" data-n="73. Murcia" data-v="index 67 · interval 61–85"/><rect class="bar t2" x="316.00" y="89.31" width="3.72" height="116.69" data-n="74. Oberhausen" data-v="index 66 · interval 52–103"/><rect class="bar t2" x="320.22" y="89.66" width="3.72" height="116.34" data-n="75. Rennes" data-v="index 66 · interval 61–100"/><rect class="bar t2" x="324.44" y="90.37" width="3.72" height="115.63" data-n="76. A Coruña" data-v="index 66 · interval 61–101"/><rect class="bar t2" x="328.66" y="91.07" width="3.72" height="114.93" data-n="77. Białystok" data-v="index 65 · interval 61–102"/><rect class="bar t2" x="332.88" y="91.42" width="3.72" height="114.58" data-n="78. Halle (Saale)" data-v="index 65 · interval 70–94"/><rect class="bar t2" x="337.10" y="91.60" width="3.72" height="114.40" data-n="79. Alicante" data-v="index 65 · interval 76–89"/><rect class="bar t2" x="341.32" y="91.60" width="3.72" height="114.40" data-n="80. Wrocław" data-v="index 65 · interval 66–99"/><rect class="bar t2" x="345.53" y="93.18" width="3.72" height="112.82" data-n="81. Luxembourg" data-v="index 64 · interval 73–99"/><rect class="bar t2" x="349.75" y="93.54" width="3.72" height="112.46" data-n="82. Ljubljana" data-v="index 64 · interval 76–96"/><rect class="bar t2" x="353.97" y="93.89" width="3.72" height="112.11" data-n="83. Karlsruhe" data-v="index 64 · interval 76–106"/><rect class="bar t2" x="358.19" y="94.94" width="3.72" height="111.06" data-n="84. Hamburg" data-v="index 63 · interval 68–112"/><rect class="bar t2" x="362.41" y="96.00" width="3.72" height="110.00" data-n="85. Uppsala" data-v="index 62 · interval 18–131"/><rect class="bar t2" x="366.63" y="96.18" width="3.72" height="109.82" data-n="86. Bergen" data-v="index 62 · interval 70–113"/><rect class="bar t2" x="370.85" y="97.94" width="3.72" height="108.06" data-n="87. Gdańsk" data-v="index 61 · interval 88–103"/><rect class="bar t2" x="375.07" y="98.11" width="3.72" height="107.89" data-n="88. Stavanger" data-v="index 61 · interval 75–117"/><rect class="bar t2" x="379.29" y="98.46" width="3.72" height="107.54" data-n="89. Krefeld" data-v="index 61 · interval 81–118"/><rect class="bar t2" x="383.51" y="98.64" width="3.72" height="107.36" data-n="90. Vigo" data-v="index 61 · interval 76–127"/><rect class="bar t2" x="387.73" y="98.99" width="3.72" height="107.01" data-n="91. Almería" data-v="index 61 · interval 91–108"/><rect class="bar t2" x="391.95" y="99.52" width="3.72" height="106.48" data-n="92. Debrecen" data-v="index 60 · interval 71–119"/><rect class="bar t2" x="396.16" y="99.70" width="3.72" height="106.30" data-n="93. Łódź" data-v="index 60 · interval 88–113"/><rect class="bar t2" x="400.38" y="100.05" width="3.72" height="105.95" data-n="94. Leipzig" data-v="index 60 · interval 81–123"/><rect class="bar t2" x="404.60" y="100.40" width="3.72" height="105.60" data-n="95. Rostock" data-v="index 60 · interval 80–123"/><rect class="bar t2" x="408.82" y="100.58" width="3.72" height="105.42" data-n="96. Toruń" data-v="index 60 · interval 85–127"/><rect class="bar t2" x="413.04" y="100.58" width="3.72" height="105.42" data-n="97. Angers" data-v="index 60 · interval 73–133"/><rect class="bar t2" x="417.26" y="100.93" width="3.72" height="105.07" data-n="98. Mainz" data-v="index 60 · interval 88–127"/><rect class="bar t2" x="421.48" y="100.93" width="3.72" height="105.07" data-n="99. Nuremberg" data-v="index 60 · interval 95–116"/><rect class="bar t2" x="425.70" y="101.10" width="3.72" height="104.90" data-n="100. Gelsenkirchen" data-v="index 60 · interval 93–121"/><rect class="bar t2" x="429.92" y="101.10" width="3.72" height="104.90" data-n="101. Terrassa" data-v="index 60 · interval 85–126"/><rect class="bar t2" x="434.14" y="101.63" width="3.72" height="104.37" data-n="102. Jerez de la Frontera" data-v="index 59 · interval 97–117"/><rect class="bar t2" x="438.36" y="101.63" width="3.72" height="104.37" data-n="103. Tallinn" data-v="index 59 · interval 53–130"/><rect class="bar t2" x="442.58" y="101.98" width="3.72" height="104.02" data-n="104. Budapest" data-v="index 59 · interval 78–124"/><rect class="bar t2" x="446.79" y="102.16" width="3.72" height="103.84" data-n="105. Reykjavik" data-v="index 59 · interval 89–129"/><rect class="bar t2" x="451.01" y="102.34" width="3.72" height="103.66" data-n="106. Orléans" data-v="index 59 · interval 98–124"/><rect class="bar t2" x="455.23" y="102.51" width="3.72" height="103.49" data-n="107. Alkmaar" data-v="index 59 · interval 80–140"/><rect class="bar t2" x="459.45" y="102.69" width="3.72" height="103.31" data-n="108. Bern" data-v="index 59 · interval 67–144"/><rect class="bar t2" x="463.67" y="102.86" width="3.72" height="103.14" data-n="109. Madrid" data-v="index 59 · interval 82–127"/><rect class="bar t2" x="467.89" y="102.86" width="3.72" height="103.14" data-n="110. Clermont-Ferrand" data-v="index 59 · interval 93–128"/><rect class="bar t2" x="472.11" y="103.57" width="3.72" height="102.43" data-n="111. Warsaw" data-v="index 58 · interval 67–137"/><rect class="bar t2" x="476.33" y="103.74" width="3.72" height="102.26" data-n="112. Geneva" data-v="index 58 · interval 93–126"/><rect class="bar t2" x="480.55" y="103.92" width="3.72" height="102.08" data-n="113. Linz" data-v="index 58 · interval 84–141"/><rect class="bar t2" x="484.77" y="104.10" width="3.72" height="101.90" data-n="114. Valletta" data-v="index 58 · interval 65–151"/><rect class="bar t2" x="488.99" y="104.10" width="3.72" height="101.90" data-n="115. Granada" data-v="index 58 · interval 90–140"/><rect class="bar t2" x="493.21" y="104.62" width="3.72" height="101.38" data-n="116. Bordeaux" data-v="index 58 · interval 100–132"/><rect class="bar t2" x="497.42" y="105.33" width="3.72" height="100.67" data-n="117. Venice" data-v="index 57 · interval 62–142"/><rect class="bar t2" x="501.64" y="105.86" width="3.72" height="100.14" data-n="118. Aachen" data-v="index 57 · interval 89–145"/><rect class="bar t2" x="505.86" y="106.56" width="3.72" height="99.44" data-n="119. Gdynia" data-v="index 56 · interval 114–130"/><rect class="bar t2" x="510.08" y="107.26" width="3.72" height="98.74" data-n="120. Florence" data-v="index 56 · interval 88–137"/><rect class="bar t2" x="514.30" y="107.26" width="3.72" height="98.74" data-n="121. Poznań" data-v="index 56 · interval 106–141"/><rect class="bar t2" x="518.52" y="107.26" width="3.72" height="98.74" data-n="122. Frankfurt" data-v="index 56 · interval 114–135"/><rect class="bar t2" x="522.74" y="107.44" width="3.72" height="98.56" data-n="123. Liège" data-v="index 56 · interval 91–147"/><rect class="bar t2" x="526.96" y="107.62" width="3.72" height="98.38" data-n="124. Oviedo" data-v="index 56 · interval 66–157"/><rect class="bar t2" x="531.18" y="107.79" width="3.72" height="98.21" data-n="125. Mönchengladbach" data-v="index 56 · interval 106–142"/><rect class="bar t2" x="535.40" y="108.85" width="3.72" height="97.15" data-n="126. Lublin" data-v="index 55 · interval 95–141"/><rect class="bar t2" x="539.62" y="109.02" width="3.72" height="96.98" data-n="127. Dortmund" data-v="index 55 · interval 103–138"/><rect class="bar t2" x="543.84" y="109.20" width="3.72" height="96.80" data-n="128. Gothenburg" data-v="index 55 · interval 96–150"/><rect class="bar t2" x="548.05" y="109.55" width="3.72" height="96.45" data-n="129. Kraków" data-v="index 55 · interval 114–136"/><rect class="bar t2" x="552.27" y="110.08" width="3.72" height="95.92" data-n="130. Rouen" data-v="index 54 · interval 90–159"/><rect class="bar t2" x="556.49" y="110.96" width="3.72" height="95.04" data-n="131. Dublin" data-v="index 54 · interval 107–143"/><rect class="bar t2" x="560.71" y="111.66" width="3.72" height="94.34" data-n="132. Bielefeld" data-v="index 54 · interval 112–145"/><rect class="bar t2" x="564.93" y="111.84" width="3.72" height="94.16" data-n="133. Stuttgart" data-v="index 54 · interval 113–152"/><rect class="bar t2" x="569.15" y="112.72" width="3.72" height="93.28" data-n="134. Bratislava" data-v="index 53 · interval 119–143"/><rect class="bar t2" x="573.37" y="113.95" width="3.72" height="92.05" data-n="135. Zurich" data-v="index 52 · interval 120–153"/><rect class="bar t2" x="577.59" y="115.36" width="3.72" height="90.64" data-n="136. Kassel" data-v="index 52 · interval 109–168"/><rect class="bar t2" x="581.81" y="115.54" width="3.72" height="90.46" data-n="137. Turin" data-v="index 51 · interval 24–167"/><rect class="bar t2" x="586.03" y="116.24" width="3.72" height="89.76" data-n="138. Rzeszów" data-v="index 51 · interval 135–150"/><rect class="bar t2" x="590.25" y="116.24" width="3.72" height="89.76" data-n="139. Toulon" data-v="index 51 · interval 118–155"/><rect class="bar t2" x="594.47" y="116.24" width="3.72" height="89.76" data-n="140. Riga" data-v="index 51 · interval 120–150"/><rect class="bar t2" x="598.68" y="116.24" width="3.72" height="89.76" data-n="141. Parma" data-v="index 51 · interval 67–166"/><rect class="bar t2" x="602.90" y="116.24" width="3.72" height="89.76" data-n="142. Bydgoszcz" data-v="index 51 · interval 120–155"/><rect class="bar t2" x="607.12" y="116.59" width="3.72" height="89.41" data-n="143. Bergamo" data-v="index 51 · interval 111–153"/><rect class="bar t2" x="611.34" y="116.77" width="3.72" height="89.23" data-n="144. Dresden" data-v="index 51 · interval 113–160"/><rect class="bar t2" x="615.56" y="117.82" width="3.72" height="88.18" data-n="145. Reims" data-v="index 50 · interval 133–160"/><rect class="bar t2" x="619.78" y="117.82" width="3.72" height="88.18" data-n="146. Essen" data-v="index 50 · interval 133–157"/><rect class="bar t3" x="624.00" y="118.00" width="3.72" height="88.00" data-n="147. Basel" data-v="index 50 · interval 125–164"/><rect class="bar t3" x="628.22" y="119.94" width="3.72" height="86.06" data-n="148. Szczecin" data-v="index 49 · interval 137–159"/><rect class="bar t3" x="632.44" y="121.34" width="3.72" height="84.66" data-n="149. Bochum" data-v="index 48 · interval 121–168"/><rect class="bar t3" x="636.66" y="122.05" width="3.72" height="83.95" data-n="150. Cartagena" data-v="index 48 · interval 135–165"/><rect class="bar t3" x="640.88" y="122.05" width="3.72" height="83.95" data-n="151. Zagreb" data-v="index 48 · interval 136–164"/><rect class="bar t3" x="645.10" y="122.22" width="3.72" height="83.78" data-n="152. Le Havre" data-v="index 48 · interval 144–159"/><rect class="bar t3" x="649.32" y="122.40" width="3.72" height="83.60" data-n="153. Prague" data-v="index 48 · interval 143–158"/><rect class="bar t3" x="653.53" y="123.10" width="3.72" height="82.90" data-n="154. Lausanne" data-v="index 47 · interval 112–175"/><rect class="bar t3" x="657.75" y="123.10" width="3.72" height="82.90" data-n="155. Pescara" data-v="index 47 · interval 128–162"/><rect class="bar t3" x="661.97" y="123.98" width="3.72" height="82.02" data-n="156. Vilnius" data-v="index 47 · interval 149–162"/><rect class="bar t3" x="666.19" y="124.34" width="3.72" height="81.66" data-n="157. Verona" data-v="index 46 · interval 124–166"/><rect class="bar t3" x="670.41" y="124.51" width="3.72" height="81.49" data-n="158. Alcalá de Henares" data-v="index 46 · interval 139–173"/><rect class="bar t3" x="674.63" y="126.45" width="3.72" height="79.55" data-n="159. Nice" data-v="index 45 · interval 145–165"/><rect class="bar t3" x="678.85" y="127.50" width="3.72" height="78.50" data-n="160. Brescia" data-v="index 45 · interval 103–176"/><rect class="bar t3" x="683.07" y="128.91" width="3.72" height="77.09" data-n="161. Wuppertal" data-v="index 44 · interval 147–177"/><rect class="bar t3" x="687.29" y="129.09" width="3.72" height="76.91" data-n="162. Erfurt" data-v="index 44 · interval 158–169"/><rect class="bar t3" x="691.51" y="130.50" width="3.72" height="75.50" data-n="163. Częstochowa" data-v="index 43 · interval 135–182"/><rect class="bar t3" x="695.73" y="130.67" width="3.72" height="75.33" data-n="164. Katowice" data-v="index 43 · interval 159–169"/><rect class="bar t3" x="699.95" y="131.38" width="3.72" height="74.62" data-n="165. Marseille" data-v="index 42 · interval 159–171"/><rect class="bar t3" x="704.16" y="131.38" width="3.72" height="74.62" data-n="166. Radom" data-v="index 42 · interval 150–175"/><rect class="bar t3" x="708.38" y="132.96" width="3.72" height="73.04" data-n="167. Chemnitz" data-v="index 42 · interval 157–176"/><rect class="bar t3" x="712.60" y="134.37" width="3.72" height="71.63" data-n="168. Prato" data-v="index 41 · interval 125–185"/><rect class="bar t3" x="716.82" y="135.42" width="3.72" height="70.58" data-n="169. Brno" data-v="index 40 · interval 168–175"/><rect class="bar t3" x="721.04" y="135.78" width="3.72" height="70.22" data-n="170. Thessaloniki" data-v="index 40 · interval 134–187"/><rect class="bar t3" x="725.26" y="135.95" width="3.72" height="70.05" data-n="171. Kaunas" data-v="index 40 · interval 165–176"/><rect class="bar t3" x="729.48" y="136.13" width="3.72" height="69.87" data-n="172. Plovdiv" data-v="index 40 · interval 110–187"/><rect class="bar t3" x="733.70" y="136.83" width="3.72" height="69.17" data-n="173. Ostrava" data-v="index 39 · interval 145–181"/><rect class="bar t3" x="737.92" y="137.18" width="3.72" height="68.82" data-n="174. Košice" data-v="index 39 · interval 166–176"/><rect class="bar t3" x="742.14" y="140.00" width="3.72" height="66.00" data-n="175. Genoa" data-v="index 38 · interval 157–191"/><rect class="bar t3" x="746.36" y="140.70" width="3.72" height="65.30" data-n="176. Wiesbaden" data-v="index 37 · interval 165–188"/><rect class="bar t3" x="750.58" y="141.58" width="3.72" height="64.42" data-n="177. Milan" data-v="index 37 · interval 162–184"/><rect class="bar t3" x="754.79" y="142.11" width="3.72" height="63.89" data-n="178. Varna" data-v="index 36 · interval 169–183"/><rect class="bar t3" x="759.01" y="142.46" width="3.72" height="63.54" data-n="179. Cluj-Napoca" data-v="index 36 · interval 171–183"/><rect class="bar t3" x="763.23" y="144.93" width="3.72" height="61.07" data-n="180. Padua" data-v="index 35 · interval 176–187"/><rect class="bar t3" x="767.45" y="145.81" width="3.72" height="60.19" data-n="181. Lisbon" data-v="index 34 · interval 147–193"/><rect class="bar t3" x="771.67" y="147.92" width="3.72" height="58.08" data-n="182. Cork" data-v="index 33 · interval 179–189"/><rect class="bar t3" x="775.89" y="149.68" width="3.72" height="56.32" data-n="183. Porto" data-v="index 32 · interval 169–196"/><rect class="bar t3" x="780.11" y="150.03" width="3.72" height="55.97" data-n="184. Sofia" data-v="index 32 · interval 182–189"/><rect class="bar t3" x="784.33" y="150.56" width="3.72" height="55.44" data-n="185. Rome" data-v="index 32 · interval 176–193"/><rect class="bar t3" x="788.55" y="151.09" width="3.72" height="54.91" data-n="186. Dijon" data-v="index 31 · interval 174–196"/><rect class="bar t3" x="792.77" y="151.44" width="3.72" height="54.56" data-n="187. Charleroi" data-v="index 31 · interval 178–192"/><rect class="bar t3" x="796.99" y="154.96" width="3.72" height="51.04" data-n="188. Naples" data-v="index 29 · interval 173–200"/><rect class="bar t3" x="801.21" y="155.31" width="3.72" height="50.69" data-n="189. Trieste" data-v="index 29 · interval 188–194"/><rect class="bar t3" x="805.42" y="155.49" width="3.72" height="50.51" data-n="190. Palermo" data-v="index 29 · interval 186–196"/><rect class="bar t3" x="809.64" y="156.37" width="3.72" height="49.63" data-n="191. Sintra" data-v="index 28 · interval 181–198"/><rect class="bar t3" x="813.86" y="157.42" width="3.72" height="48.58" data-n="192. Cagliari" data-v="index 28 · interval 184–196"/><rect class="bar t3" x="818.08" y="158.48" width="3.72" height="47.52" data-n="193. Arad" data-v="index 27 · interval 187–197"/><rect class="bar t3" x="822.30" y="158.83" width="3.72" height="47.17" data-n="194. Satu Mare" data-v="index 27 · interval 170–208"/><rect class="bar t3" x="826.52" y="159.54" width="3.72" height="46.46" data-n="195. Oradea" data-v="index 26 · interval 172–205"/><rect class="bar t3" x="830.74" y="160.77" width="3.72" height="45.23" data-n="196. Nicosia" data-v="index 26 · interval 193–198"/><rect class="bar t3" x="834.96" y="163.94" width="3.72" height="42.06" data-n="197. Targu Mures" data-v="index 24 · interval 189–201"/><rect class="bar t3" x="839.18" y="164.11" width="3.72" height="41.89" data-n="198. Messina" data-v="index 24 · interval 169–209"/><rect class="bar t3" x="843.40" y="165.34" width="3.72" height="40.66" data-n="199. Brasov" data-v="index 23 · interval 191–201"/><rect class="bar t3" x="847.62" y="167.63" width="3.72" height="38.37" data-n="200. Burgas" data-v="index 22 · interval 189–209"/><rect class="bar t3" x="851.84" y="167.81" width="3.72" height="38.19" data-n="201. Sibiu" data-v="index 22 · interval 198–201"/><rect class="bar t3" x="856.05" y="171.33" width="3.72" height="34.67" data-n="202. Timisoara" data-v="index 20 · interval 200–204"/><rect class="bar t3" x="860.27" y="173.97" width="3.72" height="32.03" data-n="203. Constanta" data-v="index 18 · interval 202–207"/><rect class="bar t3" x="864.49" y="175.73" width="3.72" height="30.27" data-n="204. Athens" data-v="index 17 · interval 203–208"/><rect class="bar t3" x="868.71" y="176.08" width="3.72" height="29.92" data-n="205. Braga" data-v="index 17 · interval 200–210"/><rect class="bar t3" x="872.93" y="176.43" width="3.72" height="29.57" data-n="206. Bari" data-v="index 17 · interval 203–210"/><rect class="bar t3" x="877.15" y="177.84" width="3.72" height="28.16" data-n="207. Bucharest" data-v="index 16 · interval 201–209"/><rect class="bar t3" x="881.37" y="178.54" width="3.72" height="27.46" data-n="208. Baia Mare" data-v="index 16 · interval 201–210"/><rect class="bar t3" x="885.59" y="179.07" width="3.72" height="26.93" data-n="209. Catania" data-v="index 15 · interval 193–214"/><rect class="bar t3" x="889.81" y="182.94" width="3.72" height="23.06" data-n="210. Bacau" data-v="index 13 · interval 203–212"/><rect class="bar t3" x="894.03" y="185.06" width="3.72" height="20.94" data-n="211. Split" data-v="index 12 · interval 203–214"/><rect class="bar t3" x="898.25" y="186.82" width="3.72" height="19.18" data-n="212. Pitesti" data-v="index 11 · interval 207–213"/><rect class="bar t3" x="902.47" y="189.81" width="3.72" height="16.19" data-n="213. Craiova" data-v="index 9 · interval 211–214"/><rect class="bar t3" x="906.68" y="193.68" width="3.72" height="12.32" data-n="214. Galati" data-v="index 7 · interval 212–215"/><rect class="bar t3" x="910.90" y="200.19" width="3.72" height="5.81" data-n="215. Iasi" data-v="index 3 · interval 215–218"/><rect class="bar t3" x="915.12" y="202.48" width="3.72" height="3.52" data-n="216. Botosani" data-v="index 2 · interval 214–219"/><rect class="bar t3" x="919.34" y="203.01" width="3.72" height="2.99" data-n="217. Buzau" data-v="index 2 · interval 215–219"/><rect class="bar t3" x="923.56" y="203.18" width="3.72" height="2.82" data-n="218. Ploiesti" data-v="index 2 · interval 215–219"/><rect class="bar t3" x="927.78" y="205.30" width="3.72" height="1.50" data-n="219. Braila" data-v="index 0 · interval 218–219"/><line x1="10.1" y1="29.5" x2="10.1" y2="21.5" class="lbl-tick"/><text x="10.1" y="16.5" class="lbl" text-anchor="start">Stockholm #1</text><line x1="94.5" y1="49.1" x2="94.5" y2="41.1" class="lbl-tick"/><text x="94.5" y="36.1" class="lbl" text-anchor="start">Munich 21</text><line x1="166.2" y1="64.2" x2="166.2" y2="56.2" class="lbl-tick"/><text x="166.2" y="51.2" class="lbl" text-anchor="middle">Malmö 38</text><line x1="465.8" y1="98.9" x2="465.8" y2="90.9" class="lbl-tick"/><text x="465.8" y="85.9" class="lbl" text-anchor="middle">Madrid 109</text><line x1="575.5" y1="110.0" x2="575.5" y2="102.0" class="lbl-tick"/><text x="575.5" y="97.0" class="lbl" text-anchor="middle">Zurich 135</text><line x1="786.4" y1="146.6" x2="786.4" y2="138.6" class="lbl-tick"/><text x="786.4" y="133.6" class="lbl" text-anchor="middle">Rome 182</text><line x1="879.3" y1="173.8" x2="879.3" y2="165.8" class="lbl-tick"/><text x="879.3" y="160.8" class="lbl" text-anchor="end">Bucharest 207</text><line x1="929.9" y1="201.3" x2="929.9" y2="193.3" class="lbl-tick"/><text x="929.9" y="188.3" class="lbl" text-anchor="end">Brăila 219</text><line x1="8" y1="206" x2="932" y2="206" class="axis"/><text x="8" y="230" class="lbl axis-lbl">rank 1</text><text x="932" y="230" class="lbl axis-lbl" text-anchor="end">rank 219</text></svg>
+<div class="legend"><span><span class="sw" style="background:var(--t1)"></span>Tier 1 · lower risk</span>
+<span><span class="sw" style="background:var(--t2)"></span>Tier 2 · middle</span>
+<span><span class="sw" style="background:var(--t3)"></span>Tier 3 · higher risk</span></div>
+<p class="figcap">All 219 cities in rank order. Bar height is the index (0–100, higher = lower
+assessed risk on the network). Hover any bar.</p></div>
+
+<h2>The top ten</h2>
+<div class="plates"><div class="plate"><div class="plate-rank t1bg">1</div><div class="plate-body"><div class="plate-city">🇸🇪&nbsp;Stockholm<span class="plate-idx">98</span></div><div class="plate-tag">the upset — we audited it ourselves, and it held</div><div class="plate-int">interval 1–7</div></div></div>
+<div class="plate"><div class="plate-rank t1bg">2</div><div class="plate-body"><div class="plate-city">🇫🇮&nbsp;Helsinki<span class="plate-idx">97</span></div><div class="plate-tag">the fastest riser in Europe, by our model and everyone else's</div><div class="plate-int">interval 1–9</div></div></div>
+<div class="plate"><div class="plate-rank t1bg">3</div><div class="plate-body"><div class="plate-city">🇧🇪&nbsp;Antwerp<span class="plate-idx">96</span></div><div class="plate-tag">the most agreed-upon cycling city in Europe</div><div class="plate-int">interval 2–13</div></div></div>
+<div class="plate"><div class="plate-rank t1bg">4</div><div class="plate-body"><div class="plate-city">🇳🇱&nbsp;Haarlem<span class="plate-idx">96</span></div><div class="plate-tag">the Dutch cities the famous rankings never test</div><div class="plate-int">interval 1–11</div></div></div>
+<div class="plate"><div class="plate-rank t1bg">5</div><div class="plate-body"><div class="plate-city">🇳🇱&nbsp;Leiden<span class="plate-idx">96</span></div><div class="plate-int">interval 3–13</div></div></div>
+<div class="plate"><div class="plate-rank t1bg">6</div><div class="plate-body"><div class="plate-city">🇫🇮&nbsp;Vantaa<span class="plate-idx">96</span></div><div class="plate-tag">the suburbs nobody celebrates — until you measure them</div><div class="plate-int">interval 2–10</div></div></div>
+<div class="plate"><div class="plate-rank t1bg">7</div><div class="plate-body"><div class="plate-city">🇳🇱&nbsp;The Hague<span class="plate-idx">95</span></div><div class="plate-int">interval 4–18</div></div></div>
+<div class="plate"><div class="plate-rank t1bg">8</div><div class="plate-body"><div class="plate-city">🇫🇮&nbsp;Espoo<span class="plate-idx">95</span></div><div class="plate-int">interval 3–14</div></div></div>
+<div class="plate"><div class="plate-rank t1bg">9</div><div class="plate-body"><div class="plate-city">🇳🇱&nbsp;Amsterdam<span class="plate-idx">94</span></div><div class="plate-tag">the reputation, confirmed</div><div class="plate-int">interval 5–17</div></div></div>
+<div class="plate"><div class="plate-rank t1bg">10</div><div class="plate-body"><div class="plate-city">🇪🇸&nbsp;Barcelona<span class="plate-idx">93</span></div><div class="plate-tag">superblocks and 30 km/h zones, measurable from orbit</div><div class="plate-int">interval 6–19</div></div></div></div>
+<p class="figcap">The number beside each city is its index; the interval is where it lands in 90%
+of 2,000 re-runs of the method with perturbed assumptions.</p>
+
+<div class="prose">
+<h2>Five results that will start arguments</h2>
+<ol class="arglist">
+<li><b>Stockholm is first — and we audited our own headline before publishing it.</b><br>
+No famous ranking puts Stockholm on the podium; the new Copenhagenize Index has it 26th. So we
+stress-tested our own result. It held: 64% of Stockholm's street network is explicitly signed at
+30&nbsp;km/h — Dutch levels (Amsterdam: 73%, Copenhagen: 6%) — its speed-limit tagging is 94%
+complete, its street density matches Copenhagen's, and it carries ~2,000&nbsp;km of separated
+cycleways, the largest such network of any peer. Its one soft spot is a very low modelled traffic
+load — plausibly real, given two decades of congestion charging — and even if we triple that
+penalty to the peer level, Stockholm still finishes on the podium. What we won't claim: that it
+beats Helsinki. The two are one point apart with overlapping intervals. Top of the leading
+cluster — that, the data supports.</li>
+<li><b>The cycling capitals are top-20, not top-3.</b><br>
+Amsterdam 9th. Paris 11th. Utrecht 14th. Copenhagen 17th. All world-class — and all measurably
+closer to the chasing pack than their reputations suggest. We don't score culture, mode share or
+ambition. On pure network risk, the gap has closed more than the folklore has.</li>
+<li><b>Nobody celebrates Vantaa and Espoo. The data does.</b><br>
+Helsinki's suburbs rank 6th and 8th, above almost every famous cycling city in Europe. Fame-based
+indices never test suburbs. A risk model doesn't know what a suburb is — it just measures the
+paths, and Finland built them everywhere.</li>
+<li><b>Where rankings disagree, the injury data picks a side — ours.</b><br>
+Copenhagenize puts <span class="hotword">Bordeaux 9th</span>; we put it 116th — and Bordeaux has
+the <i>worst measured serious-injury rate of any French city in our outcome panel</i> (4.0 per 10M
+passages vs Paris's 1.9). They put <span class="hotword">Zurich 21st</span>; we put it 135th — and
+Zurich has the worst injury rate in the entire panel (7.4). Indices that reward policy momentum
+measure ambition. We measure asphalt. In both checkable disagreements, the crash data sides with
+the asphalt.</li>
+<li><b>The bottom of the table is where the work is.</b><br>
+14 of the last 20 cities are Romanian — Bucharest ranks 207,
+Timișoara 202, Brăila 219th of 219. That reads brutal, and it is. It is
+also, for the first time, <i>measured</i> — segment by segment, on the same scale as Stockholm.
+A gap you can measure is a gap you can close.</li>
+</ol>
+
+<h2>Us vs. the famous ranking</h2>
+<p>The Copenhagenize Index 2025 scores infrastructure <i>plus usage plus policy</i>. We score risk
+only. The two agree far more than they disagree (rank correlation 0.47 across their European top
+30; 19 of their 27 European cities are in our top 50) — and where they don't, see argument #4.</p>
+</div>
+
+<div class="figure"><svg viewBox="0 0 940 430" role="img" aria-label="Copenhagenize 2025 rank versus our rank, 27 cities"><line class="grid" x1="64" y1="26.0" x2="910" y2="26.0"/><text class="lbl" x="56" y="29.5" text-anchor="end">1</text><line class="grid" x1="64" y1="96.9" x2="910" y2="96.9"/><text class="lbl" x="56" y="100.4" text-anchor="end">30</text><line class="grid" x1="64" y1="170.2" x2="910" y2="170.2"/><text class="lbl" x="56" y="173.7" text-anchor="end">60</text><line class="grid" x1="64" y1="243.6" x2="910" y2="243.6"/><text class="lbl" x="56" y="247.1" text-anchor="end">90</text><line class="grid" x1="64" y1="316.9" x2="910" y2="316.9"/><text class="lbl" x="56" y="320.4" text-anchor="end">120</text><line class="diag" x1="64.0" y1="26.0" x2="878.7" y2="89.6"/><circle class="pt" cx="64.0" cy="57.8" r="5.5" data-n="Utrecht" data-v="Copenhagenize #1 · ours #14"/><circle class="pt" cx="95.3" cy="65.1" r="5.5" data-n="Copenhagen" data-v="Copenhagenize #2 · ours #17"/><circle class="pt" cx="126.7" cy="79.8" r="5.5" data-n="Ghent" data-v="Copenhagenize #3 · ours #23"/><circle class="pt" cx="158.0" cy="45.6" r="5.5" data-n="Amsterdam" data-v="Copenhagenize #4 · ours #9"/><circle class="pt" cx="189.3" cy="50.4" r="5.5" data-n="Paris" data-v="Copenhagenize #5 · ours #11"/><circle class="pt" cx="220.7" cy="28.4" r="5.5" data-n="Helsinki" data-v="Copenhagenize #6 · ours #2"/><circle class="pt" cx="252.0" cy="114.0" r="5.5" data-n="Münster" data-v="Copenhagenize #7 · ours #37"/><circle class="pt" cx="283.3" cy="30.9" r="5.5" data-n="Antwerp" data-v="Copenhagenize #8 · ours #3"/><circle class="pt hot" cx="314.7" cy="307.1" r="7" data-n="Bordeaux" data-v="Copenhagenize #9 · ours #116"/><circle class="pt" cx="346.0" cy="109.1" r="5.5" data-n="Nantes" data-v="Copenhagenize #10 · ours #35"/><circle class="pt" cx="377.3" cy="162.9" r="5.5" data-n="Bonn" data-v="Copenhagenize #11 · ours #57"/><circle class="pt" cx="408.7" cy="40.7" r="5.5" data-n="The Hague" data-v="Copenhagenize #12 · ours #7"/><circle class="pt" cx="440.0" cy="106.7" r="5.5" data-n="Strasbourg" data-v="Copenhagenize #13 · ours #34"/><circle class="pt" cx="471.3" cy="89.6" r="5.5" data-n="Lyon" data-v="Copenhagenize #14 · ours #27"/><circle class="pt" cx="502.7" cy="116.4" r="5.5" data-n="Malmö" data-v="Copenhagenize #15 · ours #38"/><circle class="pt" cx="534.0" cy="74.9" r="5.5" data-n="Munich" data-v="Copenhagenize #16 · ours #21"/><circle class="pt" cx="565.3" cy="175.1" r="5.5" data-n="Oslo" data-v="Copenhagenize #17 · ours #62"/><circle class="pt" cx="596.7" cy="143.3" r="5.5" data-n="Vienna" data-v="Copenhagenize #18 · ours #49"/><circle class="pt" cx="628.0" cy="287.6" r="5.5" data-n="Bern" data-v="Copenhagenize #19 · ours #108"/><circle class="pt" cx="659.3" cy="177.6" r="5.5" data-n="Graz" data-v="Copenhagenize #20 · ours #63"/><circle class="pt hot" cx="690.7" cy="353.6" r="7" data-n="Zurich" data-v="Copenhagenize #21 · ours #135"/><circle class="pt" cx="722.0" cy="62.7" r="5.5" data-n="Rotterdam" data-v="Copenhagenize #22 · ours #16"/><circle class="pt" cx="753.3" cy="224.0" r="5.5" data-n="Ljubljana" data-v="Copenhagenize #23 · ours #82"/><circle class="pt" cx="784.7" cy="121.3" r="5.5" data-n="Bologna" data-v="Copenhagenize #24 · ours #40"/><circle class="pt" cx="816.0" cy="26.0" r="5.5" data-n="Stockholm" data-v="Copenhagenize #25 · ours #1"/><circle class="pt" cx="847.3" cy="133.6" r="5.5" data-n="Vitoria-Gasteiz" data-v="Copenhagenize #26 · ours #45"/><circle class="pt" cx="878.7" cy="219.1" r="5.5" data-n="Wrocław" data-v="Copenhagenize #27 · ours #80"/><text class="plbl" x="64.0" y="75.8" text-anchor="middle">Utrecht</text><text class="plbl" x="220.7" y="17.4" text-anchor="middle">Helsinki</text><text class="plbl" x="252.0" y="132.0" text-anchor="middle">Münster</text><text class="plbl" x="283.3" y="19.9" text-anchor="middle">Antwerp</text><text class="plbl plbl-hot" x="314.7" y="296.1" text-anchor="middle">Bordeaux</text><text class="plbl plbl-hot" x="690.7" y="341.6" text-anchor="middle">Zurich</text><text class="plbl" x="816.0" y="31.0" text-anchor="start">Stockholm</text><text class="lbl" x="487" y="418" text-anchor="middle">Copenhagenize Index 2025 rank (their European top 30) →</text><text class="lbl" x="16" y="202" text-anchor="middle" transform="rotate(-90 16 202)">our rank →</text><text class="lbl diag-lbl" x="753.3" y="72.4">perfect agreement</text></svg>
+<p class="figcap">Each dot is one of the 27 European cities in the Copenhagenize 2025 top 30.
+On the dashed line, the two rankings agree. Below it, we rank the city higher; above it, lower.
+<span class="hotword">Orange</span>: the two disagreements where independent injury data exists —
+it supports the risk model in both.</p></div>
+
+<div class="prose">
+<h2>Why you can trust it</h2>
+</div>
+<div class="tiles">
+<div class="tile"><div class="big">0.50</div><div class="what">Rank correlation with measured
+bicycle commuting share across 156 cities (Eurostat) — exactly the pre-registered validation
+target, on par with the best published city indices.</div></div>
+<div class="tile"><div class="big">0.79</div><div class="what">Serious-injury rate ratio per +10
+index points across 2.6&nbsp;billion measured cyclist passages (p&nbsp;&lt;&nbsp;0.001): higher-ranked
+cities really do hurt fewer riders.</div></div>
+<div class="tile"><div class="big">2,000</div><div class="what">Re-runs of the entire method with
+perturbed weights and goalposts behind every rank. The interval printed next to each city is
+where it lands in 90% of them.</div></div>
+</div>
+
+<div class="prose">
+<div class="caveat"><b>What we won't claim.</b> Two cities with overlapping intervals are a tie —
+read the intervals, not just the places: Stockholm's #1 means "top of the leading cluster", not
+"beats Helsinki". Once you control for country, the injury association is inconclusive (five
+countries of outcome data can't separate a city from its nation). Rankings that carry no caveats
+are marketing.</div>
+
+<h2>The full ranking</h2>
+<p class="figcap">* = straddles a tier boundary under re-specification. Index 0–100, higher =
+lower assessed risk. Interval = 90% rank range over 2,000 re-runs.</p>
+</div>
+<div class="tblwrap"><table>
+<thead><tr><th>#</th><th>City</th><th>Index</th><th>Interval</th></tr></thead>
+<tbody><tr class="grp"><td colspan="4">Tier 1 — lower assessed risk</td></tr>
+<tr><td class="r">1</td><td>🇸🇪&nbsp;Stockholm</td><td class="r">98</td><td class="r ci">1–7</td></tr>
+<tr><td class="r">2</td><td>🇫🇮&nbsp;Helsinki</td><td class="r">97</td><td class="r ci">1–9</td></tr>
+<tr><td class="r">3</td><td>🇧🇪&nbsp;Antwerp</td><td class="r">96</td><td class="r ci">2–13</td></tr>
+<tr><td class="r">4</td><td>🇳🇱&nbsp;Haarlem</td><td class="r">96</td><td class="r ci">1–11</td></tr>
+<tr><td class="r">5</td><td>🇳🇱&nbsp;Leiden</td><td class="r">96</td><td class="r ci">3–13</td></tr>
+<tr><td class="r">6</td><td>🇫🇮&nbsp;Vantaa</td><td class="r">96</td><td class="r ci">2–10</td></tr>
+<tr><td class="r">7</td><td>🇳🇱&nbsp;The Hague</td><td class="r">95</td><td class="r ci">4–18</td></tr>
+<tr><td class="r">8</td><td>🇫🇮&nbsp;Espoo</td><td class="r">95</td><td class="r ci">3–14</td></tr>
+<tr><td class="r">9</td><td>🇳🇱&nbsp;Amsterdam</td><td class="r">94</td><td class="r ci">5–17</td></tr>
+<tr><td class="r">10</td><td>🇪🇸&nbsp;Barcelona</td><td class="r">93</td><td class="r ci">6–19</td></tr>
+<tr><td class="r">11</td><td>🇫🇷&nbsp;Paris</td><td class="r">93</td><td class="r ci">5–16</td></tr>
+<tr><td class="r">12</td><td>🇫🇮&nbsp;Tampere</td><td class="r">92</td><td class="r ci">4–17</td></tr>
+<tr><td class="r">13</td><td>🇳🇱&nbsp;Eindhoven</td><td class="r">92</td><td class="r ci">9–23</td></tr>
+<tr><td class="r">14</td><td>🇳🇱&nbsp;Utrecht</td><td class="r">92</td><td class="r ci">11–22</td></tr>
+<tr><td class="r">15</td><td>🇧🇪&nbsp;Brussels</td><td class="r">91</td><td class="r ci">3–23</td></tr>
+<tr><td class="r">16</td><td>🇳🇱&nbsp;Rotterdam</td><td class="r">91</td><td class="r ci">14–24</td></tr>
+<tr><td class="r">17</td><td>🇩🇰&nbsp;Copenhagen</td><td class="r">89</td><td class="r ci">8–28</td></tr>
+<tr><td class="r">18</td><td>🇪🇸&nbsp;San Sebastián</td><td class="r">89</td><td class="r ci">17–29</td></tr>
+<tr><td class="r">19</td><td>🇫🇮&nbsp;Turku</td><td class="r">88</td><td class="r ci">6–24</td></tr>
+<tr><td class="r">20</td><td>🇩🇪&nbsp;Hanover</td><td class="r">88</td><td class="r ci">18–28</td></tr>
+<tr><td class="r">21</td><td>🇩🇪&nbsp;Munich</td><td class="r">87</td><td class="r ci">20–33</td></tr>
+<tr><td class="r">22</td><td>🇩🇪&nbsp;Bremen</td><td class="r">86</td><td class="r ci">18–36</td></tr>
+<tr><td class="r">23</td><td>🇧🇪&nbsp;Ghent</td><td class="r">86</td><td class="r ci">21–37</td></tr>
+<tr><td class="r">24</td><td>🇩🇪&nbsp;Braunschweig</td><td class="r">84</td><td class="r ci">23–36</td></tr>
+<tr><td class="r">25</td><td>🇪🇸&nbsp;Bilbao</td><td class="r">84</td><td class="r ci">13–44</td></tr>
+<tr><td class="r">26</td><td>🇳🇱&nbsp;Almere</td><td class="r">84</td><td class="r ci">11–36</td></tr>
+<tr><td class="r">27</td><td>🇫🇷&nbsp;Lyon</td><td class="r">84</td><td class="r ci">13–38</td></tr>
+<tr><td class="r">28</td><td>🇩🇪&nbsp;Lübeck</td><td class="r">83</td><td class="r ci">24–40</td></tr>
+<tr><td class="r">29</td><td>🇳🇱&nbsp;Groningen</td><td class="r">83</td><td class="r ci">26–37</td></tr>
+<tr><td class="r">30</td><td>🇫🇷&nbsp;Montpellier</td><td class="r">82</td><td class="r ci">25–42</td></tr>
+<tr><td class="r">31</td><td>🇫🇷&nbsp;Toulouse</td><td class="r">82</td><td class="r ci">27–44</td></tr>
+<tr><td class="r">32</td><td>🇫🇷&nbsp;Grenoble</td><td class="r">80</td><td class="r ci">27–48</td></tr>
+<tr><td class="r">33</td><td>🇳🇱&nbsp;Tilburg</td><td class="r">80</td><td class="r ci">31–46</td></tr>
+<tr><td class="r">34</td><td>🇫🇷&nbsp;Strasbourg</td><td class="r">79</td><td class="r ci">22–55</td></tr>
+<tr><td class="r">35</td><td>🇫🇷&nbsp;Nantes</td><td class="r">79</td><td class="r ci">27–52</td></tr>
+<tr><td class="r">36</td><td>🇪🇸&nbsp;Málaga</td><td class="r">79</td><td class="r ci">30–50</td></tr>
+<tr><td class="r">37</td><td>🇩🇪&nbsp;Münster</td><td class="r">78</td><td class="r ci">34–49</td></tr>
+<tr><td class="r">38</td><td>🇸🇪&nbsp;Malmö</td><td class="r">78</td><td class="r ci">12–57</td></tr>
+<tr><td class="r">39</td><td>🇪🇸&nbsp;Seville</td><td class="r">78</td><td class="r ci">24–55</td></tr>
+<tr><td class="r">40</td><td>🇮🇹&nbsp;Bologna</td><td class="r">78</td><td class="r ci">18–49</td></tr>
+<tr><td class="r">41</td><td>🇪🇸&nbsp;Valencia</td><td class="r">78</td><td class="r ci">15–67</td></tr>
+<tr><td class="r">42</td><td>🇫🇷&nbsp;Tours</td><td class="r">77</td><td class="r ci">32–65</td></tr>
+<tr><td class="r">43</td><td>🇪🇸&nbsp;Valladolid</td><td class="r">76</td><td class="r ci">37–60</td></tr>
+<tr><td class="r">44</td><td>🇩🇪&nbsp;Freiburg</td><td class="r">76</td><td class="r ci">37–58</td></tr>
+<tr><td class="r">45</td><td>🇪🇸&nbsp;Vitoria-Gasteiz</td><td class="r">76</td><td class="r ci">39–56</td></tr>
+<tr><td class="r">46</td><td>🇪🇸&nbsp;Sabadell</td><td class="r">76</td><td class="r ci">24–69</td></tr>
+<tr><td class="r">47</td><td>🇪🇸&nbsp;Zaragoza</td><td class="r">75</td><td class="r ci">44–56</td></tr>
+<tr><td class="r">48</td><td>🇩🇪&nbsp;Duisburg</td><td class="r">75</td><td class="r ci">38–62</td></tr>
+<tr><td class="r">49</td><td>🇦🇹&nbsp;Vienna</td><td class="r">74</td><td class="r ci">36–77</td></tr>
+<tr><td class="r">50</td><td>🇪🇸&nbsp;Palma</td><td class="r">74</td><td class="r ci">48–59</td></tr>
+<tr><td class="r">51</td><td>🇩🇪&nbsp;Berlin</td><td class="r">74</td><td class="r ci">37–63</td></tr>
+<tr><td class="r">52</td><td>🇩🇪&nbsp;Mannheim</td><td class="r">74</td><td class="r ci">40–73</td></tr>
+<tr><td class="r">53</td><td>🇪🇸&nbsp;Pamplona</td><td class="r">73</td><td class="r ci">45–72</td></tr>
+<tr><td class="r">54</td><td>🇫🇮&nbsp;Oulu</td><td class="r">72</td><td class="r ci">10–81</td></tr>
+<tr><td class="r">55</td><td>🇪🇸&nbsp;Córdoba</td><td class="r">72</td><td class="r ci">44–70</td></tr>
+<tr><td class="r">56</td><td>🇫🇷&nbsp;Lille</td><td class="r">71</td><td class="r ci">51–79</td></tr>
+<tr><td class="r">57</td><td>🇩🇪&nbsp;Bonn</td><td class="r">70</td><td class="r ci">43–87</td></tr>
+<tr><td class="r">58</td><td>🇩🇪&nbsp;Düsseldorf</td><td class="r">70</td><td class="r ci">55–73</td></tr>
+<tr><td class="r">59</td><td>🇩🇪&nbsp;Magdeburg</td><td class="r">70</td><td class="r ci">55–77</td></tr>
+<tr><td class="r">60</td><td>🇸🇮&nbsp;Maribor</td><td class="r">70</td><td class="r ci">47–73</td></tr>
+<tr><td class="r">61</td><td>🇳🇴&nbsp;Trondheim</td><td class="r">70</td><td class="r ci">46–73</td></tr>
+<tr><td class="r">62</td><td>🇳🇴&nbsp;Oslo</td><td class="r">70</td><td class="r ci">40–81</td></tr>
+<tr><td class="r">63</td><td>🇦🇹&nbsp;Graz</td><td class="r">70</td><td class="r ci">53–80</td></tr>
+<tr><td class="r">64</td><td>🇩🇪&nbsp;Augsburg</td><td class="r">69</td><td class="r ci">54–74</td></tr>
+<tr><td class="r">65</td><td>🇫🇷&nbsp;Nancy</td><td class="r">69</td><td class="r ci">38–108</td></tr>
+<tr><td class="r">66</td><td>🇩🇰&nbsp;Odense</td><td class="r">69</td><td class="r ci">23–89</td></tr>
+<tr><td class="r">67</td><td>🇩🇪&nbsp;Kiel</td><td class="r">68</td><td class="r ci">62–82</td></tr>
+<tr><td class="r">68</td><td>🇭🇺&nbsp;Szeged</td><td class="r">68</td><td class="r ci">63–75</td></tr>
+<tr><td class="r">69</td><td>🇪🇸&nbsp;Elche</td><td class="r">68</td><td class="r ci">65–76</td></tr>
+<tr><td class="r">70</td><td>🇪🇸&nbsp;Gijón</td><td class="r">68</td><td class="r ci">48–84</td></tr>
+<tr><td class="r">71</td><td>🇩🇪&nbsp;Cologne*</td><td class="r">67</td><td class="r ci">61–91</td></tr>
+<tr><td class="r">72</td><td>🇩🇰&nbsp;Aarhus*</td><td class="r">67</td><td class="r ci">43–90</td></tr>
+<tr><td class="r">73</td><td>🇪🇸&nbsp;Murcia*</td><td class="r">67</td><td class="r ci">61–85</td></tr>
+<tr class="grp"><td colspan="4">Tier 2 — middle</td></tr>
+<tr><td class="r">74</td><td>🇩🇪&nbsp;Oberhausen*</td><td class="r">66</td><td class="r ci">52–103</td></tr>
+<tr><td class="r">75</td><td>🇫🇷&nbsp;Rennes*</td><td class="r">66</td><td class="r ci">61–100</td></tr>
+<tr><td class="r">76</td><td>🇪🇸&nbsp;A Coruña</td><td class="r">66</td><td class="r ci">61–101</td></tr>
+<tr><td class="r">77</td><td>🇵🇱&nbsp;Białystok*</td><td class="r">65</td><td class="r ci">61–102</td></tr>
+<tr><td class="r">78</td><td>🇩🇪&nbsp;Halle (Saale)*</td><td class="r">65</td><td class="r ci">70–94</td></tr>
+<tr><td class="r">79</td><td>🇪🇸&nbsp;Alicante</td><td class="r">65</td><td class="r ci">76–89</td></tr>
+<tr><td class="r">80</td><td>🇵🇱&nbsp;Wrocław*</td><td class="r">65</td><td class="r ci">66–99</td></tr>
+<tr><td class="r">81</td><td>🇱🇺&nbsp;Luxembourg</td><td class="r">64</td><td class="r ci">73–99</td></tr>
+<tr><td class="r">82</td><td>🇸🇮&nbsp;Ljubljana</td><td class="r">64</td><td class="r ci">76–96</td></tr>
+<tr><td class="r">83</td><td>🇩🇪&nbsp;Karlsruhe</td><td class="r">64</td><td class="r ci">76–106</td></tr>
+<tr><td class="r">84</td><td>🇩🇪&nbsp;Hamburg</td><td class="r">63</td><td class="r ci">68–112</td></tr>
+<tr><td class="r">85</td><td>🇸🇪&nbsp;Uppsala*</td><td class="r">62</td><td class="r ci">18–131</td></tr>
+<tr><td class="r">86</td><td>🇳🇴&nbsp;Bergen</td><td class="r">62</td><td class="r ci">70–113</td></tr>
+<tr><td class="r">87</td><td>🇵🇱&nbsp;Gdańsk</td><td class="r">61</td><td class="r ci">88–103</td></tr>
+<tr><td class="r">88</td><td>🇳🇴&nbsp;Stavanger</td><td class="r">61</td><td class="r ci">75–117</td></tr>
+<tr><td class="r">89</td><td>🇩🇪&nbsp;Krefeld</td><td class="r">61</td><td class="r ci">81–118</td></tr>
+<tr><td class="r">90</td><td>🇪🇸&nbsp;Vigo</td><td class="r">61</td><td class="r ci">76–127</td></tr>
+<tr><td class="r">91</td><td>🇪🇸&nbsp;Almería</td><td class="r">61</td><td class="r ci">91–108</td></tr>
+<tr><td class="r">92</td><td>🇭🇺&nbsp;Debrecen</td><td class="r">60</td><td class="r ci">71–119</td></tr>
+<tr><td class="r">93</td><td>🇵🇱&nbsp;Łódź</td><td class="r">60</td><td class="r ci">88–113</td></tr>
+<tr><td class="r">94</td><td>🇩🇪&nbsp;Leipzig</td><td class="r">60</td><td class="r ci">81–123</td></tr>
+<tr><td class="r">95</td><td>🇩🇪&nbsp;Rostock</td><td class="r">60</td><td class="r ci">80–123</td></tr>
+<tr><td class="r">96</td><td>🇵🇱&nbsp;Toruń</td><td class="r">60</td><td class="r ci">85–127</td></tr>
+<tr><td class="r">97</td><td>🇫🇷&nbsp;Angers</td><td class="r">60</td><td class="r ci">73–133</td></tr>
+<tr><td class="r">98</td><td>🇩🇪&nbsp;Mainz</td><td class="r">60</td><td class="r ci">88–127</td></tr>
+<tr><td class="r">99</td><td>🇩🇪&nbsp;Nuremberg</td><td class="r">60</td><td class="r ci">95–116</td></tr>
+<tr><td class="r">100</td><td>🇩🇪&nbsp;Gelsenkirchen</td><td class="r">60</td><td class="r ci">93–121</td></tr>
+<tr><td class="r">101</td><td>🇪🇸&nbsp;Terrassa</td><td class="r">60</td><td class="r ci">85–126</td></tr>
+<tr><td class="r">102</td><td>🇪🇸&nbsp;Jerez de la Frontera</td><td class="r">59</td><td class="r ci">97–117</td></tr>
+<tr><td class="r">103</td><td>🇪🇪&nbsp;Tallinn</td><td class="r">59</td><td class="r ci">53–130</td></tr>
+<tr><td class="r">104</td><td>🇭🇺&nbsp;Budapest</td><td class="r">59</td><td class="r ci">78–124</td></tr>
+<tr><td class="r">105</td><td>🇮🇸&nbsp;Reykjavik</td><td class="r">59</td><td class="r ci">89–129</td></tr>
+<tr><td class="r">106</td><td>🇫🇷&nbsp;Orléans</td><td class="r">59</td><td class="r ci">98–124</td></tr>
+<tr><td class="r">107</td><td>🇳🇱&nbsp;Alkmaar</td><td class="r">59</td><td class="r ci">80–140</td></tr>
+<tr><td class="r">108</td><td>🇨🇭&nbsp;Bern</td><td class="r">59</td><td class="r ci">67–144</td></tr>
+<tr><td class="r">109</td><td>🇪🇸&nbsp;Madrid</td><td class="r">59</td><td class="r ci">82–127</td></tr>
+<tr><td class="r">110</td><td>🇫🇷&nbsp;Clermont-Ferrand</td><td class="r">59</td><td class="r ci">93–128</td></tr>
+<tr><td class="r">111</td><td>🇵🇱&nbsp;Warsaw</td><td class="r">58</td><td class="r ci">67–137</td></tr>
+<tr><td class="r">112</td><td>🇨🇭&nbsp;Geneva</td><td class="r">58</td><td class="r ci">93–126</td></tr>
+<tr><td class="r">113</td><td>🇦🇹&nbsp;Linz</td><td class="r">58</td><td class="r ci">84–141</td></tr>
+<tr><td class="r">114</td><td>🇲🇹&nbsp;Valletta</td><td class="r">58</td><td class="r ci">65–151</td></tr>
+<tr><td class="r">115</td><td>🇪🇸&nbsp;Granada</td><td class="r">58</td><td class="r ci">90–140</td></tr>
+<tr><td class="r">116</td><td>🇫🇷&nbsp;Bordeaux</td><td class="r">58</td><td class="r ci">100–132</td></tr>
+<tr><td class="r">117</td><td>🇮🇹&nbsp;Venice</td><td class="r">57</td><td class="r ci">62–142</td></tr>
+<tr><td class="r">118</td><td>🇩🇪&nbsp;Aachen</td><td class="r">57</td><td class="r ci">89–145</td></tr>
+<tr><td class="r">119</td><td>🇵🇱&nbsp;Gdynia</td><td class="r">56</td><td class="r ci">114–130</td></tr>
+<tr><td class="r">120</td><td>🇮🇹&nbsp;Florence</td><td class="r">56</td><td class="r ci">88–137</td></tr>
+<tr><td class="r">121</td><td>🇵🇱&nbsp;Poznań</td><td class="r">56</td><td class="r ci">106–141</td></tr>
+<tr><td class="r">122</td><td>🇩🇪&nbsp;Frankfurt</td><td class="r">56</td><td class="r ci">114–135</td></tr>
+<tr><td class="r">123</td><td>🇧🇪&nbsp;Liège</td><td class="r">56</td><td class="r ci">91–147</td></tr>
+<tr><td class="r">124</td><td>🇪🇸&nbsp;Oviedo</td><td class="r">56</td><td class="r ci">66–157</td></tr>
+<tr><td class="r">125</td><td>🇩🇪&nbsp;Mönchengladbach</td><td class="r">56</td><td class="r ci">106–142</td></tr>
+<tr><td class="r">126</td><td>🇵🇱&nbsp;Lublin</td><td class="r">55</td><td class="r ci">95–141</td></tr>
+<tr><td class="r">127</td><td>🇩🇪&nbsp;Dortmund</td><td class="r">55</td><td class="r ci">103–138</td></tr>
+<tr><td class="r">128</td><td>🇸🇪&nbsp;Gothenburg</td><td class="r">55</td><td class="r ci">96–150</td></tr>
+<tr><td class="r">129</td><td>🇵🇱&nbsp;Kraków</td><td class="r">55</td><td class="r ci">114–136</td></tr>
+<tr><td class="r">130</td><td>🇫🇷&nbsp;Rouen</td><td class="r">54</td><td class="r ci">90–159</td></tr>
+<tr><td class="r">131</td><td>🇮🇪&nbsp;Dublin</td><td class="r">54</td><td class="r ci">107–143</td></tr>
+<tr><td class="r">132</td><td>🇩🇪&nbsp;Bielefeld</td><td class="r">54</td><td class="r ci">112–145</td></tr>
+<tr><td class="r">133</td><td>🇩🇪&nbsp;Stuttgart</td><td class="r">54</td><td class="r ci">113–152</td></tr>
+<tr><td class="r">134</td><td>🇸🇰&nbsp;Bratislava</td><td class="r">53</td><td class="r ci">119–143</td></tr>
+<tr><td class="r">135</td><td>🇨🇭&nbsp;Zurich</td><td class="r">52</td><td class="r ci">120–153</td></tr>
+<tr><td class="r">136</td><td>🇩🇪&nbsp;Kassel</td><td class="r">52</td><td class="r ci">109–168</td></tr>
+<tr><td class="r">137</td><td>🇮🇹&nbsp;Turin*</td><td class="r">51</td><td class="r ci">24–167</td></tr>
+<tr><td class="r">138</td><td>🇵🇱&nbsp;Rzeszów</td><td class="r">51</td><td class="r ci">135–150</td></tr>
+<tr><td class="r">139</td><td>🇫🇷&nbsp;Toulon*</td><td class="r">51</td><td class="r ci">118–155</td></tr>
+<tr><td class="r">140</td><td>🇱🇻&nbsp;Riga</td><td class="r">51</td><td class="r ci">120–150</td></tr>
+<tr><td class="r">141</td><td>🇮🇹&nbsp;Parma*</td><td class="r">51</td><td class="r ci">67–166</td></tr>
+<tr><td class="r">142</td><td>🇵🇱&nbsp;Bydgoszcz*</td><td class="r">51</td><td class="r ci">120–155</td></tr>
+<tr><td class="r">143</td><td>🇮🇹&nbsp;Bergamo*</td><td class="r">51</td><td class="r ci">111–153</td></tr>
+<tr><td class="r">144</td><td>🇩🇪&nbsp;Dresden*</td><td class="r">51</td><td class="r ci">113–160</td></tr>
+<tr><td class="r">145</td><td>🇫🇷&nbsp;Reims*</td><td class="r">50</td><td class="r ci">133–160</td></tr>
+<tr><td class="r">146</td><td>🇩🇪&nbsp;Essen*</td><td class="r">50</td><td class="r ci">133–157</td></tr>
+<tr class="grp"><td colspan="4">Tier 3 — higher assessed risk</td></tr>
+<tr><td class="r">147</td><td>🇨🇭&nbsp;Basel*</td><td class="r">50</td><td class="r ci">125–164</td></tr>
+<tr><td class="r">148</td><td>🇵🇱&nbsp;Szczecin*</td><td class="r">49</td><td class="r ci">137–159</td></tr>
+<tr><td class="r">149</td><td>🇩🇪&nbsp;Bochum*</td><td class="r">48</td><td class="r ci">121–168</td></tr>
+<tr><td class="r">150</td><td>🇪🇸&nbsp;Cartagena*</td><td class="r">48</td><td class="r ci">135–165</td></tr>
+<tr><td class="r">151</td><td>🇭🇷&nbsp;Zagreb*</td><td class="r">48</td><td class="r ci">136–164</td></tr>
+<tr><td class="r">152</td><td>🇫🇷&nbsp;Le Havre*</td><td class="r">48</td><td class="r ci">144–159</td></tr>
+<tr><td class="r">153</td><td>🇨🇿&nbsp;Prague*</td><td class="r">48</td><td class="r ci">143–158</td></tr>
+<tr><td class="r">154</td><td>🇨🇭&nbsp;Lausanne*</td><td class="r">47</td><td class="r ci">112–175</td></tr>
+<tr><td class="r">155</td><td>🇮🇹&nbsp;Pescara*</td><td class="r">47</td><td class="r ci">128–162</td></tr>
+<tr><td class="r">156</td><td>🇱🇹&nbsp;Vilnius</td><td class="r">47</td><td class="r ci">149–162</td></tr>
+<tr><td class="r">157</td><td>🇮🇹&nbsp;Verona*</td><td class="r">46</td><td class="r ci">124–166</td></tr>
+<tr><td class="r">158</td><td>🇪🇸&nbsp;Alcalá de Henares</td><td class="r">46</td><td class="r ci">139–173</td></tr>
+<tr><td class="r">159</td><td>🇫🇷&nbsp;Nice</td><td class="r">45</td><td class="r ci">145–165</td></tr>
+<tr><td class="r">160</td><td>🇮🇹&nbsp;Brescia*</td><td class="r">45</td><td class="r ci">103–176</td></tr>
+<tr><td class="r">161</td><td>🇩🇪&nbsp;Wuppertal</td><td class="r">44</td><td class="r ci">147–177</td></tr>
+<tr><td class="r">162</td><td>🇩🇪&nbsp;Erfurt</td><td class="r">44</td><td class="r ci">158–169</td></tr>
+<tr><td class="r">163</td><td>🇵🇱&nbsp;Częstochowa</td><td class="r">43</td><td class="r ci">135–182</td></tr>
+<tr><td class="r">164</td><td>🇵🇱&nbsp;Katowice</td><td class="r">43</td><td class="r ci">159–169</td></tr>
+<tr><td class="r">165</td><td>🇫🇷&nbsp;Marseille</td><td class="r">42</td><td class="r ci">159–171</td></tr>
+<tr><td class="r">166</td><td>🇵🇱&nbsp;Radom</td><td class="r">42</td><td class="r ci">150–175</td></tr>
+<tr><td class="r">167</td><td>🇩🇪&nbsp;Chemnitz</td><td class="r">42</td><td class="r ci">157–176</td></tr>
+<tr><td class="r">168</td><td>🇮🇹&nbsp;Prato</td><td class="r">41</td><td class="r ci">125–185</td></tr>
+<tr><td class="r">169</td><td>🇨🇿&nbsp;Brno</td><td class="r">40</td><td class="r ci">168–175</td></tr>
+<tr><td class="r">170</td><td>🇬🇷&nbsp;Thessaloniki</td><td class="r">40</td><td class="r ci">134–187</td></tr>
+<tr><td class="r">171</td><td>🇱🇹&nbsp;Kaunas</td><td class="r">40</td><td class="r ci">165–176</td></tr>
+<tr><td class="r">172</td><td>🇧🇬&nbsp;Plovdiv</td><td class="r">40</td><td class="r ci">110–187</td></tr>
+<tr><td class="r">173</td><td>🇨🇿&nbsp;Ostrava</td><td class="r">39</td><td class="r ci">145–181</td></tr>
+<tr><td class="r">174</td><td>🇸🇰&nbsp;Košice</td><td class="r">39</td><td class="r ci">166–176</td></tr>
+<tr><td class="r">175</td><td>🇮🇹&nbsp;Genoa</td><td class="r">38</td><td class="r ci">157–191</td></tr>
+<tr><td class="r">176</td><td>🇩🇪&nbsp;Wiesbaden</td><td class="r">37</td><td class="r ci">165–188</td></tr>
+<tr><td class="r">177</td><td>🇮🇹&nbsp;Milan</td><td class="r">37</td><td class="r ci">162–184</td></tr>
+<tr><td class="r">178</td><td>🇧🇬&nbsp;Varna</td><td class="r">36</td><td class="r ci">169–183</td></tr>
+<tr><td class="r">179</td><td>🇷🇴&nbsp;Cluj-Napoca</td><td class="r">36</td><td class="r ci">171–183</td></tr>
+<tr><td class="r">180</td><td>🇮🇹&nbsp;Padua</td><td class="r">35</td><td class="r ci">176–187</td></tr>
+<tr><td class="r">181</td><td>🇵🇹&nbsp;Lisbon</td><td class="r">34</td><td class="r ci">147–193</td></tr>
+<tr><td class="r">182</td><td>🇮🇪&nbsp;Cork</td><td class="r">33</td><td class="r ci">179–189</td></tr>
+<tr><td class="r">183</td><td>🇵🇹&nbsp;Porto</td><td class="r">32</td><td class="r ci">169–196</td></tr>
+<tr><td class="r">184</td><td>🇧🇬&nbsp;Sofia</td><td class="r">32</td><td class="r ci">182–189</td></tr>
+<tr><td class="r">185</td><td>🇮🇹&nbsp;Rome</td><td class="r">32</td><td class="r ci">176–193</td></tr>
+<tr><td class="r">186</td><td>🇫🇷&nbsp;Dijon</td><td class="r">31</td><td class="r ci">174–196</td></tr>
+<tr><td class="r">187</td><td>🇧🇪&nbsp;Charleroi</td><td class="r">31</td><td class="r ci">178–192</td></tr>
+<tr><td class="r">188</td><td>🇮🇹&nbsp;Naples</td><td class="r">29</td><td class="r ci">173–200</td></tr>
+<tr><td class="r">189</td><td>🇮🇹&nbsp;Trieste</td><td class="r">29</td><td class="r ci">188–194</td></tr>
+<tr><td class="r">190</td><td>🇮🇹&nbsp;Palermo</td><td class="r">29</td><td class="r ci">186–196</td></tr>
+<tr><td class="r">191</td><td>🇵🇹&nbsp;Sintra</td><td class="r">28</td><td class="r ci">181–198</td></tr>
+<tr><td class="r">192</td><td>🇮🇹&nbsp;Cagliari</td><td class="r">28</td><td class="r ci">184–196</td></tr>
+<tr><td class="r">193</td><td>🇷🇴&nbsp;Arad</td><td class="r">27</td><td class="r ci">187–197</td></tr>
+<tr><td class="r">194</td><td>🇷🇴&nbsp;Satu Mare</td><td class="r">27</td><td class="r ci">170–208</td></tr>
+<tr><td class="r">195</td><td>🇷🇴&nbsp;Oradea</td><td class="r">26</td><td class="r ci">172–205</td></tr>
+<tr><td class="r">196</td><td>🇨🇾&nbsp;Nicosia</td><td class="r">26</td><td class="r ci">193–198</td></tr>
+<tr><td class="r">197</td><td>🇷🇴&nbsp;Targu Mures</td><td class="r">24</td><td class="r ci">189–201</td></tr>
+<tr><td class="r">198</td><td>🇮🇹&nbsp;Messina</td><td class="r">24</td><td class="r ci">169–209</td></tr>
+<tr><td class="r">199</td><td>🇷🇴&nbsp;Brasov</td><td class="r">23</td><td class="r ci">191–201</td></tr>
+<tr><td class="r">200</td><td>🇧🇬&nbsp;Burgas</td><td class="r">22</td><td class="r ci">189–209</td></tr>
+<tr><td class="r">201</td><td>🇷🇴&nbsp;Sibiu</td><td class="r">22</td><td class="r ci">198–201</td></tr>
+<tr><td class="r">202</td><td>🇷🇴&nbsp;Timisoara</td><td class="r">20</td><td class="r ci">200–204</td></tr>
+<tr><td class="r">203</td><td>🇷🇴&nbsp;Constanta</td><td class="r">18</td><td class="r ci">202–207</td></tr>
+<tr><td class="r">204</td><td>🇬🇷&nbsp;Athens</td><td class="r">17</td><td class="r ci">203–208</td></tr>
+<tr><td class="r">205</td><td>🇵🇹&nbsp;Braga</td><td class="r">17</td><td class="r ci">200–210</td></tr>
+<tr><td class="r">206</td><td>🇮🇹&nbsp;Bari</td><td class="r">17</td><td class="r ci">203–210</td></tr>
+<tr><td class="r">207</td><td>🇷🇴&nbsp;Bucharest</td><td class="r">16</td><td class="r ci">201–209</td></tr>
+<tr><td class="r">208</td><td>🇷🇴&nbsp;Baia Mare</td><td class="r">16</td><td class="r ci">201–210</td></tr>
+<tr><td class="r">209</td><td>🇮🇹&nbsp;Catania</td><td class="r">15</td><td class="r ci">193–214</td></tr>
+<tr><td class="r">210</td><td>🇷🇴&nbsp;Bacau</td><td class="r">13</td><td class="r ci">203–212</td></tr>
+<tr><td class="r">211</td><td>🇭🇷&nbsp;Split</td><td class="r">12</td><td class="r ci">203–214</td></tr>
+<tr><td class="r">212</td><td>🇷🇴&nbsp;Pitesti</td><td class="r">11</td><td class="r ci">207–213</td></tr>
+<tr><td class="r">213</td><td>🇷🇴&nbsp;Craiova</td><td class="r">9</td><td class="r ci">211–214</td></tr>
+<tr><td class="r">214</td><td>🇷🇴&nbsp;Galati</td><td class="r">7</td><td class="r ci">212–215</td></tr>
+<tr><td class="r">215</td><td>🇷🇴&nbsp;Iasi</td><td class="r">3</td><td class="r ci">215–218</td></tr>
+<tr><td class="r">216</td><td>🇷🇴&nbsp;Botosani</td><td class="r">2</td><td class="r ci">214–219</td></tr>
+<tr><td class="r">217</td><td>🇷🇴&nbsp;Buzau</td><td class="r">2</td><td class="r ci">215–219</td></tr>
+<tr><td class="r">218</td><td>🇷🇴&nbsp;Ploiesti</td><td class="r">2</td><td class="r ci">215–219</td></tr>
+<tr><td class="r">219</td><td>🇷🇴&nbsp;Braila</td><td class="r">0</td><td class="r ci">218–219</td></tr></tbody>
+</table></div>
+
+<div class="foot">
+<p><b>Method in one line:</b> every scored road segment of the production Defensive Pedal risk
+model (the one that plans real routes today) is aggregated per city across three pillars — street
+network risk, the risk of 210 simulated journeys, and low-stress accessibility — normalised on the
+219-city sample and stress-tested 2,000 times. Roads above 80&nbsp;km/h and carriageways with a
+mandatory parallel path don't count against a city's streets; cities are official municipal
+boundaries.</p>
+<p>Full technical report, criterion analysis and every caveat:
+<a href="https://claude.ai/code/artifact/ab89bd2d-773a-4d3d-8910-11cb1a42a0db">European Cycling
+Risk Ranking — technical edition</a> · Defensive Pedal Research, 2026.
+External reference: <a href="https://www.eiturbanmobility.eu/the-copenhagenize-index-2025-eit-urban-mobility-edition-reveals-the-best-bicycle-friendly-cities/">Copenhagenize
+Index 2025 — EIT Urban Mobility Edition</a>.</p>
+</div>
+</div>
+
+<div id="tip"></div>
+<script>
+(function () {
+  var tip = document.getElementById("tip");
+  document.addEventListener("mousemove", function (e) {
+    var t = e.target;
+    if (t && t.getAttribute && t.getAttribute("data-n")) {
+      tip.innerHTML = "<b>" + t.getAttribute("data-n") + "</b>" + t.getAttribute("data-v");
+      tip.style.opacity = 1;
+      var x = Math.min(e.clientX + 14, window.innerWidth - 270);
+      tip.style.left = x + "px";
+      tip.style.top = (e.clientY + 16) + "px";
+    } else {
+      tip.style.opacity = 0;
+    }
+  });
+})();
+</script>
+
+</body>
+</html>
