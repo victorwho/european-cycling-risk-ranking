@@ -37,7 +37,7 @@
   --navy:#1A1A2E; --plate-ink:#1A1A2E;
   --sh1:0 1px 2px rgba(20,20,30,.04), 0 2px 8px rgba(20,20,30,.04);
   --sh2:0 4px 12px rgba(20,20,30,.06), 0 8px 24px rgba(20,20,30,.06);
-  --tt:240ms cubic-bezier(.2,.7,.2,1);
+  --tt:240ms cubic-bezier(.2,.7,.2,1); --tt-ease:cubic-bezier(.2,.7,.2,1);
   --font:'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 }
 @media (prefers-color-scheme: dark) {
@@ -153,6 +153,33 @@ tr.grp td { font-weight:800; padding-top:22px; border-bottom:2px solid var(--ink
   box-shadow:var(--sh2); }
 #tip b { display:block; }
 @media (max-width:520px) { .arglist>li { padding-left:0; } .arglist>li::before { position:static; display:flex; margin-bottom:6px; } }
+
+/* ---- motion layer: transform/opacity only, gated on html.anim (JS + no
+   reduced-motion). Without JS or with reduced motion everything is static
+   and fully visible. ---- */
+@media (prefers-reduced-motion: no-preference) {
+  html.anim .reveal { opacity:0; transform:translateY(14px); }
+  html.anim .reveal.in { opacity:1; transform:none;
+    transition:opacity 420ms var(--tt-ease), transform 420ms var(--tt-ease);
+    transition-delay:var(--rd,0ms); }
+  html.anim .hl { background-repeat:no-repeat; background-size:0% 100%;
+    animation:hlsweep 640ms cubic-bezier(.2,.7,.2,1) 300ms forwards; }
+  html.anim .bar { transform-box:fill-box; transform-origin:bottom;
+    transform:scaleY(0);
+    transition:transform 520ms cubic-bezier(.2,.7,.2,1);
+    transition-delay:calc(var(--i,0)*4ms); }
+  html.anim .skyplay .bar { transform:scaleY(1); }
+  html.anim .pt { transform-box:fill-box; transform-origin:center;
+    opacity:0; transform:scale(.3);
+    transition:opacity 300ms cubic-bezier(.2,.7,.2,1), transform 300ms cubic-bezier(.2,.7,.2,1);
+    transition-delay:calc(200ms + var(--i,0)*30ms); }
+  html.anim .scplay .pt { opacity:.9; transform:scale(1); }
+  html.anim .scplay .pt.hot { opacity:1; }
+  html.anim .diag, html.anim .plbl { opacity:0; transition:opacity 400ms ease-out; }
+  html.anim .scplay .diag { opacity:.7; }
+  html.anim .scplay .plbl { opacity:1; transition-delay:900ms; }
+}
+@keyframes hlsweep { to { background-size:100% 100%; } }
 </style>
 
 <div class="wrap">
@@ -609,6 +636,77 @@ Index 2025 — EIT Urban Mobility Edition</a>.</p>
       tip.style.opacity = 0;
     }
   });
+})();
+</script>
+
+<script>
+(function () {
+  if (!("IntersectionObserver" in window)) return;
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  var doc = document.documentElement;
+  doc.classList.add("anim");
+  // failsafe: whatever happens, nothing stays hidden
+  setTimeout(function () {
+    document.querySelectorAll(".reveal").forEach(function (el) { el.classList.add("in"); });
+    document.querySelectorAll("svg").forEach(function (s) { s.classList.add("skyplay", "scplay"); });
+  }, 4000);
+
+  // index the skyline bars and scatter points for their staggers
+  var svgs = Array.prototype.slice.call(document.querySelectorAll("svg"));
+  var sky = null, sc = null;
+  svgs.forEach(function (s) {
+    if (s.querySelector(".bar")) sky = s;
+    if (s.querySelector(".pt")) sc = s;
+  });
+  if (sky) sky.querySelectorAll(".bar").forEach(function (b, i) { b.style.setProperty("--i", i); });
+  if (sc) sc.querySelectorAll(".pt").forEach(function (d, i) { d.style.setProperty("--i", i); });
+
+  // reveal groups with sibling stagger
+  var groups = [".plates .plate", ".arglist > li", ".tiles .tile", ".caveat"];
+  groups.forEach(function (sel) {
+    document.querySelectorAll(sel).forEach(function (el, i) {
+      el.classList.add("reveal");
+      el.style.setProperty("--rd", (i * 45) + "ms");
+    });
+  });
+
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (!e.isIntersecting) return;
+      var t = e.target;
+      if (t === sky) t.classList.add("skyplay");
+      else if (t === sc) t.classList.add("scplay");
+      else if (t.classList.contains("reveal")) t.classList.add("in");
+      else if (t.classList.contains("big")) countUp(t);
+      io.unobserve(t);
+    });
+  }, { threshold: 0.2, rootMargin: "0px 0px -5% 0px" });
+
+  document.querySelectorAll(".reveal").forEach(function (el) { io.observe(el); });
+  if (sky) io.observe(sky);
+  if (sc) io.observe(sc);
+
+  // stat tiles count up (tabular-nums prevents layout shift)
+  function countUp(el) {
+    var raw = el.textContent.trim();
+    var target = parseFloat(raw.replace(/,/g, ""));
+    if (!isFinite(target)) return;
+    var dec = (raw.split(".")[1] || "").length;
+    var grouped = raw.indexOf(",") >= 0;
+    var t0 = null, DUR = 900;
+    function frame(ts) {
+      if (!t0) t0 = ts;
+      var k = Math.min(1, (ts - t0) / DUR);
+      k = 1 - Math.pow(1 - k, 3);
+      var v = target * k;
+      el.textContent = grouped ? Math.round(v).toLocaleString("en-US")
+                               : v.toFixed(dec);
+      if (k < 1) requestAnimationFrame(frame);
+      else el.textContent = raw;
+    }
+    requestAnimationFrame(frame);
+  }
+  document.querySelectorAll(".tile .big").forEach(function (el) { io.observe(el); });
 })();
 </script>
 
