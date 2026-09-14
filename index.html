@@ -182,16 +182,19 @@ tr.grp td { font-weight:800; padding-top:22px; border-bottom:2px solid var(--ink
 .appcta-h { font-weight:800; font-size:19px; color:#15151F; margin-bottom:4px; letter-spacing:-.01em; }
 .appcta p { margin:0; font-size:14.5px; color:#3C3C50; line-height:1.5; }
 #cta { position:fixed; right:14px; bottom:max(16px, env(safe-area-inset-bottom, 0px));
-  z-index:20; background:var(--brand); border-radius:12px; box-shadow:var(--sh2);
-  width:min(260px, calc(100vw - 28px)); font-family:var(--font); }
+  z-index:20; background:var(--brand); border-radius:12px; box-shadow:var(--sh1);
+  width:min(232px, calc(100vw - 28px)); font-family:var(--font);
+  transition:width var(--tt), border-radius var(--tt); }
+#cta.closed { width:auto; border-radius:999px; }
 #cta-head { display:flex; align-items:center; justify-content:space-between; width:100%;
   background:none; border:0; cursor:pointer; font:inherit; font-weight:800;
-  font-size:14.5px; color:#15151F; padding:12px 14px; }
+  font-size:13px; color:#15151F; padding:9px 14px; min-height:40px; }
 #cta-chev { font-size:11px; color:#7a6200; padding-left:8px; transition:transform var(--tt)}
 #cta.closed #cta-chev { transform:rotate(180deg); }
 #cta.closed #cta-body { display:none; }
-#cta-body { padding:0 14px 13px; }
-#cta-body p { margin:0 0 12px; font-size:13px; color:#1a1a1a; line-height:1.45; }
+#cta-body { padding:0 13px 12px; }
+#cta-body p { margin:0 0 10px; font-size:12.5px; color:#1a1a1a; line-height:1.45; }
+#cta .storebtns a { font-size:13px; padding:8px 12px; }
 #cta .storebtns { flex-direction:column; }
 #cta .storebtns a { width:100%; }
 @media (max-width:640px) { .appcta { flex-direction:column; align-items:flex-start; } }
@@ -854,7 +857,7 @@ Index 2025 — EIT Urban Mobility Edition</a>.</p>
   var cta = document.getElementById("cta");
   if (!cta) return;
   var KEY = "dpCtaOpen";
-  var open = sessionStorage.getItem(KEY) !== "0";
+  var open = sessionStorage.getItem(KEY) === "1";
   function apply() {
     cta.classList.toggle("closed", !open);
     document.getElementById("cta-head").setAttribute("aria-expanded", open ? "true" : "false");
