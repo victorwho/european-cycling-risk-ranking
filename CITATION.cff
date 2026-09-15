@@ -9,6 +9,7 @@ type: report
 version: 1.0.0
 date-released: 2026-09-15
 license: CC-BY-4.0
+doi: 10.5281/zenodo.22771452
 url: "https://victorwho.github.io/european-cycling-risk-ranking/"
 repository-code: "https://github.com/victorwho/european-cycling-risk-ranking"
 keywords:
