@@ -164,6 +164,22 @@ tr.grp.gt1 td { border-bottom-color:var(--g2); } tr.grp.gt2 td { border-bottom-c
 tr.grp.gt3 td { border-bottom-color:var(--r2); }
 tr.grp td { font-weight:800; padding-top:22px; border-bottom:2px solid var(--ink2); font-size:12.5px;
   text-transform:uppercase; letter-spacing:.07em; }
+.citycta { background:var(--navy); border-radius:16px; padding:28px 26px;
+  margin:36px 0 8px; box-shadow:var(--sh2); }
+.citycta-inner { max-width:640px; }
+.citycta-h { color:#FAFAF7; margin:0 0 10px; font-size:clamp(21px,3vw,26px);
+  font-weight:800; letter-spacing:-.02em; }
+.citycta-p { color:#C9C9D6; font-size:15px; line-height:1.6; margin:0 0 18px; }
+.citycta-p b { color:#FAFAF7; }
+.citycta-p a { color:var(--brand-2); text-underline-offset:3px; }
+.citycta-act { display:flex; align-items:center; gap:14px; flex-wrap:wrap; }
+.citycta-btn { display:inline-flex; align-items:center; justify-content:center;
+  background:var(--brand); color:#1A1A2E; font-weight:800; font-size:15px;
+  text-decoration:none; padding:12px 20px; border-radius:10px; min-height:44px;
+  box-sizing:border-box; transition:background var(--tt), transform var(--tt); }
+.citycta-btn:hover { background:var(--brand-2); }
+.citycta-btn:active { transform:scale(.98); }
+.citycta-addr { color:#9A9AA8; font-size:13px; }
 .foot { margin-top:56px; padding-top:18px; border-top:1px solid var(--rule);
   font-size:13.5px; color:var(--ink3); line-height:1.6; }
 .foot a, .prose a { color:inherit; text-underline-offset:3px; transition:color var(--tt); }
@@ -736,7 +752,27 @@ lower assessed risk. Interval = 90% rank range over 2,000 re-runs.</p>
 <tr><td class="r">219</td><td>🇷🇴&nbsp;Braila</td><td class="r">0</td><td class="r ci">218–219</td></tr></tbody>
 </table></div>
 
+<div class="citycta" id="forcities">
+  <div class="citycta-inner">
+    <h2 class="citycta-h">For the cities on this list</h2>
+    <p class="citycta-p">Every city here can get what this page only summarizes: a
+    street-by-street diagnosis of where its cycling risk lives and what drives it
+    &mdash; the same decomposition behind this ranking. We work with municipalities
+    on three things: <b>street-level diagnosis</b> (which streets, which factor,
+    what to fix first), <b>an interactive risk map of your city</b>
+    (<a href="https://map.defensivepedal.com/bucuresti/" target="_blank"
+    rel="noopener">see the live Bucharest sample</a>), and <b>before/after
+    measurement</b> of what you build &mdash; because a gap you can measure is a
+    gap you can close, and re-measure.</p>
+    <div class="citycta-act">
+      <a id="citymail" class="citycta-btn" href="#forcities">Email us about your city</a>
+      <span class="citycta-addr" id="citymail-addr">victor [at] defensivepedal [dot] com</span>
+    </div>
+  </div>
+</div>
+
 <div class="foot">
+<p><b>Work for a city?</b> Street-level cycling intelligence for your municipality &mdash; <a href="#forcities">get in touch</a>.</p>
 <p><b>Method in one line:</b> every scored road segment of the production Defensive Pedal risk
 model (the one that plans real routes today) is aggregated per city across three pillars — street
 network risk, the risk of 210 simulated journeys, and low-stress accessibility — normalised on the
@@ -804,7 +840,7 @@ Index 2025 — EIT Urban Mobility Edition</a>.</p>
   if (sc) sc.querySelectorAll(".pt").forEach(function (d, i) { d.style.setProperty("--i", i); });
 
   // reveal groups with sibling stagger
-  var groups = [".plates .plate", ".howgrid .howcard", ".dims .dimcard", ".arglist > li", ".tiles .tile", ".appcta", ".caveat"];
+  var groups = [".plates .plate", ".howgrid .howcard", ".dims .dimcard", ".arglist > li", ".tiles .tile", ".appcta", ".caveat", ".citycta"];
   groups.forEach(function (sel) {
     document.querySelectorAll(sel).forEach(function (el, i) {
       el.classList.add("reveal");
@@ -880,6 +916,25 @@ Index 2025 — EIT Urban Mobility Edition</a>.</p>
   }
   window.addEventListener("scroll", maybeShow, { passive: true });
   maybeShow();
+})();
+</script>
+
+<script>
+(function () {
+  // assemble the address at runtime so scrapers reading HTML never see it
+  var u = "victor", d = "defensivepedal.com", addr = u + "@" + d;
+  var subject = "Cycling intelligence for [your city]";
+  var body = "City:
+Your role:
+Interested in: street-level diagnosis / "
+           + "interactive risk map / before-after measurement
+
+";
+  var a = document.getElementById("citymail");
+  if (a) a.href = "mailto:" + addr + "?subject=" + encodeURIComponent(subject)
+               + "&body=" + encodeURIComponent(body);
+  var t = document.getElementById("citymail-addr");
+  if (t) t.textContent = addr + " — we answer personally.";
 })();
 </script>
 
