@@ -1,0 +1,28 @@
+cff-version: 1.2.0
+message: "If you use this study or its data, please cite it as below."
+title: "The European Cycling Risk Index: Methodology, Validation, and a City-Level Analysis of 219 Cities"
+authors:
+  - family-names: Rotariu
+    given-names: Victor
+    affiliation: Defensive Pedal Research
+type: report
+version: 1.0.0
+date-released: 2026-09-15
+license: CC-BY-4.0
+url: "https://victorwho.github.io/european-cycling-risk-ranking/"
+repository-code: "https://github.com/victorwho/european-cycling-risk-ranking"
+keywords:
+  - cycling safety
+  - road safety
+  - urban cycling
+  - risk modelling
+  - city ranking
+  - OpenStreetMap
+  - Europe
+abstract: >-
+  219 European cities across 30 countries ranked on the cycling risk of their
+  street networks, using a production per-road risk model validated against
+  3.98 billion measured bicycle passages and 1,169 serious injuries. Three
+  dimensions (street-network risk, journey risk, low-stress accessibility),
+  90% rank intervals from 2,000 method respecifications, per-city profiles,
+  and an open data supplement.
