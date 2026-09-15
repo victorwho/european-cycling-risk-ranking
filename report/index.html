@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The European Cycling Risk Study</title>
+<meta name="description" content="The academic report behind the 219-city European cycling risk ranking: methodology, injury validation, per-dimension analyses, and a profile of every city. Open access, DOI 10.5281/zenodo.22771452.">
+<link rel="canonical" href="https://victorwho.github.io/european-cycling-risk-ranking/report/">
+<meta property="og:type" content="article">
+<meta property="og:title" content="The European Cycling Risk Study">
+<meta property="og:description" content="Methodology, validation against 3.98 billion measured passages and 1,169 serious injuries, and a city-level analysis of 219 European cities. Open access, CC-BY-4.0.">
+<meta property="og:url" content="https://victorwho.github.io/european-cycling-risk-ranking/report/">
+<meta property="og:image" content="https://victorwho.github.io/european-cycling-risk-ranking/social-card.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400..800;1,400..800&display=swap">
+<style>
+:root {
+  --paper:#FAFAF7; --ink:#15151F; --ink2:#3C3C50; --ink3:#6B6B7B;
+  --rule:#E8E6DC; --card:#FFFFFF; --brand:#F2C30F; --brand-2:#FFD83D;
+  --navy:#1A1A2E;
+  --sh1:0 1px 2px rgba(20,20,30,.04), 0 2px 8px rgba(20,20,30,.04);
+  --sh2:0 4px 12px rgba(20,20,30,.06), 0 8px 24px rgba(20,20,30,.06);
+  --tt:240ms cubic-bezier(.2,.7,.2,1);
+  --font:'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper:#1A1A2E; --ink:#F5F5FA; --ink2:#C9C9D6; --ink3:#9A9AA8;
+    --rule:#2F2F4F; --card:#252542; --navy:#1A1A2E;
+    --sh1:0 1px 2px rgba(0,0,0,.25); --sh2:0 6px 18px rgba(0,0,0,.35);
+  }
+}
+:root[data-theme="dark"] {
+  --paper:#1A1A2E; --ink:#F5F5FA; --ink2:#C9C9D6; --ink3:#9A9AA8;
+  --rule:#2F2F4F; --card:#252542; --navy:#1A1A2E;
+  --sh1:0 1px 2px rgba(0,0,0,.25); --sh2:0 6px 18px rgba(0,0,0,.35);
+}
+* { box-sizing:border-box; }
+body { background:var(--paper); color:var(--ink); margin:0;
+  font-family:var(--font); font-size:16.5px; line-height:1.65; }
+.wrap { max-width:760px; margin:0 auto; padding-block:0 64px; padding-inline:20px; }
+.brandrow { display:flex; align-items:center; gap:12px; margin:40px 0 30px; }
+.brandrow img { height:40px; width:40px; }
+.brandrow .bn { font-weight:800; font-size:15px; }
+.brandrow .bt { font-size:12px; color:var(--ink3); }
+.eyebrow { font-size:12px; font-weight:700; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--ink3); margin:0 0 12px; }
+h1 { font-size:clamp(28px,4.6vw,40px); line-height:1.15; margin:0 0 14px;
+  font-weight:800; letter-spacing:-.02em; text-wrap:balance; }
+.meta { font-size:14px; color:var(--ink3); margin:0 0 18px; }
+.doibar { display:flex; align-items:center; gap:12px; flex-wrap:wrap;
+  background:var(--card); border:1px solid var(--rule); border-radius:12px;
+  padding:12px 16px; margin:0 0 26px; box-shadow:var(--sh1); }
+.doibar img { height:20px; }
+.doibar a { color:var(--ink); font-weight:700; font-size:14.5px;
+  text-underline-offset:3px; }
+.doibar .lic { font-size:12.5px; color:var(--ink3); margin-left:auto; }
+h2 { font-size:20px; font-weight:800; margin:34px 0 8px; letter-spacing:-.01em; }
+p { margin:0 0 14px; }
+.abstract { color:var(--ink2); font-size:15.5px; }
+.actions { display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
+  gap:10px; margin:22px 0 6px; }
+.act { display:block; background:var(--card); border:1px solid var(--rule);
+  border-radius:14px; padding:16px; text-decoration:none; color:var(--ink);
+  box-shadow:var(--sh1); transition:box-shadow var(--tt), transform var(--tt); }
+.act:hover { box-shadow:var(--sh2); transform:translateY(-1px); }
+.act .t { font-weight:800; font-size:15.5px; margin-bottom:3px; }
+.act.primary { background:var(--brand); border-color:var(--brand); color:#1A1A2E; }
+.act.primary .d { color:#3C3C50; }
+.act .d { font-size:13px; color:var(--ink3); line-height:1.45; }
+pre { background:var(--card); border:1px solid var(--rule); border-radius:12px;
+  padding:14px 16px; font-size:12.5px; line-height:1.55; overflow-x:auto;
+  color:var(--ink2); }
+.cite { font-size:14.5px; color:var(--ink2); background:var(--card);
+  border-left:4px solid var(--brand); border-radius:0 10px 10px 0;
+  padding:12px 16px; margin:0 0 14px; }
+.back { display:inline-block; margin-top:30px; font-size:14px; color:var(--ink3); }
+a { color:inherit; }
+.foot { margin-top:44px; padding-top:16px; border-top:1px solid var(--rule);
+  font-size:13px; color:var(--ink3); }
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="brandrow"><img src="../logo.png" alt="Defensive Pedal">
+<div><div class="bn">Defensive Pedal</div><div class="bt">Research</div></div></div>
+
+<p class="eyebrow">Research report · open access</p>
+<h1>The European Cycling Risk Index: Methodology, Validation, and a City-Level Analysis of 219 Cities</h1>
+<p class="meta">Victor Rotariu · Defensive Pedal Research · September 2026 · v1.0</p>
+
+<div class="doibar">
+  <img src="https://zenodo.org/badge/DOI/10.5281/zenodo.22771452.svg" alt="DOI badge">
+  <a href="https://doi.org/10.5281/zenodo.22771452">doi.org/10.5281/zenodo.22771452</a>
+  <span class="lic">Archived on Zenodo · CC-BY-4.0</span>
+</div>
+
+<h2>Abstract</h2>
+<p class="abstract">We rank 219 European cities across 30 countries on the cycling
+risk of their street networks, using the per-road risk model that serves a
+production bicycle-routing service. Every public road in the coverage area —
+67.3&nbsp;million scored segments — contributes to three per-city dimensions:
+the risk of the street network itself, the risk of 210 standardised simulated
+journeys, and population-weighted low-stress accessibility. The underlying
+per-road score was validated against 3.98&nbsp;billion measured bicycle
+passages and 1,169 serious injuries across 13 European regions; at the city
+level the index predicts measured serious-injury rates (rate ratio 0.79
+[0.71–0.89] per +10 index points) and correlates with bicycle commuting share
+at ρ&nbsp;=&nbsp;0.500. Ranks are published with 90% rank intervals from 2,000
+method respecifications; the report analyses each dimension separately and
+profiles every city.</p>
+
+<div class="actions">
+  <a class="act primary" href="EU219_ACADEMIC_REPORT.html">
+    <div class="t">Read the report online</div>
+    <div class="d">Full HTML — methodology, validation, dimension analyses, 219 city profiles.</div></a>
+  <a class="act" href="EU219_Academic_Report_v1.pdf">
+    <div class="t">Download PDF</div>
+    <div class="d">Archival version, 1.9&nbsp;MB.</div></a>
+  <a class="act" href="https://doi.org/10.5281/zenodo.22771452">
+    <div class="t">Zenodo record</div>
+    <div class="d">The permanent open-access deposit — cite this DOI.</div></a>
+  <a class="act" href="../data/eu219_city_index.csv">
+    <div class="t">Data supplement</div>
+    <div class="d">Per-city dimension values, ranks and intervals (CSV) —
+    also <a href="../data/eu219_criterion_panel.csv">the criterion panel</a>.</div></a>
+</div>
+
+<h2>How to cite</h2>
+<p class="cite">Rotariu, V. (2026). <i>The European Cycling Risk Index:
+Methodology, Validation, and a City-Level Analysis of 219 Cities.</i>
+Defensive Pedal Research. https://doi.org/10.5281/zenodo.22771452</p>
+<pre>@techreport{rotariu2026eucycling,
+  author      = {Rotariu, Victor},
+  title       = {The European Cycling Risk Index: Methodology, Validation,
+                 and a City-Level Analysis of 219 Cities},
+  institution = {Defensive Pedal Research},
+  year        = {2026},
+  doi         = {10.5281/zenodo.22771452},
+  url         = {https://doi.org/10.5281/zenodo.22771452}
+}</pre>
+
+<a class="back" href="../">&larr; Back to the ranking: Streets, Not Reputations</a>
+
+<div class="foot">Defensive Pedal Research · The report and data supplement are
+CC-BY-4.0; the underlying per-road risk model is proprietary (sign-only factor
+disclosure). Municipalities: street-level cycling intelligence for your city —
+<a href="../#forcities">get in touch</a>.</div>
+</div>
+</body>
+</html>
