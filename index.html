@@ -292,6 +292,10 @@ Click a dot — or search — for its rank, score and what drives it. Ctrl/⌘-s
 .pp-row { display:flex; justify-content:space-between; gap:14px; font-size:13px;
   border-top:1px solid var(--rule); padding:4px 0; }
 .pp-row b { font-variant-numeric:tabular-nums; }
+.pp-cta { display:block; margin-top:10px; padding:8px 12px; border-radius:8px;
+  background:var(--navy); color:#F2C30F; font-weight:700; font-size:12.5px;
+  text-decoration:none; text-align:center; }
+.pp-cta:hover { background:#000; }
 </style>
 <script>
 (function () {
@@ -339,7 +343,8 @@ Click a dot — or search — for its rank, score and what drives it. Ctrl/⌘-s
       + '<div class="pp-row"><span>Street-network risk</span><b>' + p.s1 + '</b></div>'
       + '<div class="pp-row"><span>Typical journey risk</span><b>' + p.r1 + '</b></div>'
       + '<div class="pp-row"><span>Residents locked to high-stress streets</span><b>' + p.locked + '%</b></div>'
-      + '<div class="pp-row"><span>Street network</span><b>' + p.km.toLocaleString() + ' km</b></div>';
+      + '<div class="pp-row"><span>Street network</span><b>' + p.km.toLocaleString() + ' km</b></div>'
+      + (p.tier == 3 ? '<a class="pp-cta" href="#forcities">Your city? Get the street-level breakdown &rarr;</a>' : '');
     if (pop) pop.remove();
     pop = new maplibregl.Popup({offset: 12, maxWidth: "300px"})
       .setLngLat([p.lon, p.lat]).setHTML(html).addTo(map);
