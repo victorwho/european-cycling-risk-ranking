@@ -1,24 +1,31 @@
-"""Build the LinkedIn-shareable EU-219 ranking page from index117.json."""
+"""Build the shareable ranking page for the current edition (tools/edition.py)."""
+import csv
 import json
 import os
 import sys
 
 sys.stdout.reconfigure(encoding="utf-8")
 HERE = os.path.dirname(os.path.abspath(__file__))
-IDX = r"C:\dev\OSRM_Server\ccri_pilot\results200s_sens\index117.json"
+sys.path.insert(0, HERE)
+import edition  # noqa: E402
+IDX = os.path.join(edition.RESULTS, "index117.json")
 OUT = os.path.join(HERE, "streets_not_reputations.html")
 
 FLAG = {"AT":"🇦🇹","BE":"🇧🇪","BG":"🇧🇬","CH":"🇨🇭","CY":"🇨🇾","CZ":"🇨🇿","DE":"🇩🇪","DK":"🇩🇰",
         "EE":"🇪🇪","ES":"🇪🇸","FI":"🇫🇮","FR":"🇫🇷","GR":"🇬🇷","HR":"🇭🇷","HU":"🇭🇺","IE":"🇮🇪",
         "IS":"🇮🇸","IT":"🇮🇹","LT":"🇱🇹","LU":"🇱🇺","LV":"🇱🇻","MT":"🇲🇹","NL":"🇳🇱","NO":"🇳🇴",
-        "PL":"🇵🇱","PT":"🇵🇹","RO":"🇷🇴","SE":"🇸🇪","SI":"🇸🇮","SK":"🇸🇰"}
+        "PL":"🇵🇱","PT":"🇵🇹","RO":"🇷🇴","SE":"🇸🇪","SI":"🇸🇮","SK":"🇸🇰","GB":"🇬🇧"}
 
 idx = json.load(open(IDX, encoding="utf-8"))
 cities = sorted(idx["cities"], key=lambda c: c["rank"])
 by_slug = {c["slug"]: c for c in cities}
 N = len(cities)
+crit = {r["slug"]: r for r in csv.DictReader(open(os.path.join(edition.RESULTS, "criterion.csv"), encoding="utf-8"))}
+def ksi(slug): return float(crit[slug]["ksi_per_10m"])
+worst_ksi = max(crit, key=ksi)
+panel_passages_bn = sum(float(r["passages"]) for r in crit.values()) / 1e9
 
-# ---- skyline SVG (219 bars, tier-coloured) ----------------------------------
+# ---- skyline SVG (one bar per city, tier-coloured) ----------------------------------
 W, H, pad_l, pad_b, pad_t = 940, 240, 8, 34, 30
 bw = (W - 2 * pad_l) / N
 bars, labels = [], []
@@ -27,9 +34,11 @@ tier_lists = {t: [c["slug"] for c in cities if c["tier"] == t] for t in (1, 2, 3
 def shade_of(c):
     lst = tier_lists[c["tier"]]
     return min(3, lst.index(c["slug"]) * 4 // len(lst))
-LABELED = {"stockholm": "Stockholm #1", "munich": "Munich 21", "malmo": "Malmö 38",
-           "madrid": "Madrid 109", "zurich": "Zurich 135", "rome": "Rome 182",
-           "bucharest": "Bucharest 207", "braila": "Brăila 219"}
+LABEL_NAMES = {"munich": "Munich", "malmo": "Malmö", "madrid": "Madrid", "zurich": "Zurich",
+               "rome": "Rome", "bucharest": "Bucharest", cities[0]["slug"]: cities[0]["label"],
+               cities[-1]["slug"]: cities[-1]["label"]}
+LABELED = {s: (f"{n} #1" if by_slug[s]["rank"] == 1 else f"{n} {by_slug[s]['rank']}")
+           for s, n in LABEL_NAMES.items()}
 for i, c in enumerate(cities):
     h = (H - pad_b - pad_t) * c["index"] / 100.0
     x = pad_l + i * bw
@@ -57,6 +66,7 @@ TAGS = {"stockholm": "the upset — we audited it ourselves, and it held",
         "haarlem": "the Dutch cities the famous rankings never test",
         "leiden": "", "vantaa": "the suburbs nobody celebrates — until you measure them",
         "thehague": "", "espoo": "", "amsterdam": "the reputation, confirmed",
+        "copenhagen": "top ten once its harbour bridges count",
         "barcelona": "superblocks and 30 km/h zones, measurable from orbit"}
 plates = []
 for c in cities[:10]:
@@ -74,12 +84,11 @@ CPH = ["utrecht","copenhagen","ghent","amsterdam","paris","helsinki","muenster",
        "bordeaux","nantes","bonn","thehague","strasbourg","lyon","malmo","munich","oslo",
        "vienna","bern","graz","zurich","rotterdam","ljubljana","bologna","stockholm",
        "vitoria","wroclaw"]
-HOT = {"bordeaux": "Bordeaux — their 9th, our 116th. Worst injury rate of any French panel city.",
-       "zurich": "Zurich — their 21st, our 135th. Worst injury rate in our whole outcome panel.",
-       "stockholm": "Stockholm — our 1st, their 26th.", "muenster": "Münster", "utrecht": "Utrecht",
+HOT = {"bordeaux": "Bordeaux", "zurich": "Zurich",
+       "stockholm": "Stockholm", "muenster": "Münster", "utrecht": "Utrecht",
        "helsinki": "Helsinki", "antwerp": "Antwerp"}
 SW, SH, SL, SR, ST, SB = 940, 430, 64, 30, 26, 52
-ymax = 145
+ymax = max(145, max(by_slug[s]["rank"] for s in CPH) + 10)
 def sx(v): return SL + (v - 1) / 27.0 * (SW - SL - SR)
 def sy(v): return ST + (min(v, ymax) - 1) / (ymax - 1) * (SH - ST - SB)
 pts, plabels = [], []
@@ -98,7 +107,7 @@ for i, s in enumerate(CPH, 1):
         plabels.append(f'<text class="plbl{" plbl-hot" if hot else ""}" x="{sx(i):.1f}" '
                        f'y="{sy(c["rank"])+dy:.1f}" text-anchor="{anch}">{name}</text>')
 grid = []
-for gy in (1, 30, 60, 90, 120):
+for gy in [1] + list(range(30, ymax, 30)):
     grid.append(f'<line class="grid" x1="{SL}" y1="{sy(gy):.1f}" x2="{SW-SR}" y2="{sy(gy):.1f}"/>'
                 f'<text class="lbl" x="{SL-8}" y="{sy(gy)+3.5:.1f}" text-anchor="end">{gy}</text>')
 diag = f'<line class="diag" x1="{sx(1):.1f}" y1="{sy(1):.1f}" x2="{sx(27):.1f}" y2="{sy(27):.1f}"/>'
@@ -125,6 +134,17 @@ table = "\n".join(rows)
 
 ro = [c for c in cities if c["iso2"].upper() == "RO"]
 ro_last20 = sum(1 for c in cities[-20:] if c["iso2"].upper() == "RO")
+
+cph_ranks = [by_slug[s]["rank"] for s in CPH]
+_order = sorted(range(len(CPH)), key=lambda i: cph_ranks[i])
+_ours = [0] * len(CPH)
+for _k, _i in enumerate(_order):
+    _ours[_i] = _k
+cph_rho = 1 - 6 * sum((i - _ours[i]) ** 2 for i in range(len(CPH))) / (len(CPH) * (len(CPH) ** 2 - 1))
+cph_top50 = sum(1 for r in cph_ranks if r <= 50)
+capitals = ", ".join(f'{by_slug[s]["label"]} {by_slug[s]["rank"]}' for s in
+                     sorted(["amsterdam", "copenhagen", "paris", "utrecht"], key=lambda s: by_slug[s]["rank"]))
+ro_worst = [c for c in cities if c["iso2"].upper() == "RO"][-1]
 
 html = f"""<title>Streets, Not Reputations</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -356,7 +376,7 @@ tr.grp td {{ font-weight:800; padding-top:22px; border-bottom:2px solid var(--in
 <div><div class="bn">Defensive Pedal</div><div class="bt">Research</div></div></div>
 <p class="eyebrow">European Cycling Risk Ranking · 2026</p>
 <h1>Streets, <span class="hl">Not&nbsp;Reputations</span></h1>
-<p class="dek">We scored <b>67&nbsp;million road segments</b> across <b>{N} European cities</b> with a
+<p class="dek">We scored <b>74&nbsp;million road segments</b> across <b>{N} European cities</b> with a
 risk model validated against 1,169 serious cycling injuries — then ranked every city, 1st to last.
 No votes. No policy points. Just the streets as they are built.</p>
 
@@ -376,10 +396,10 @@ of 2,000 re-runs of the method with perturbed assumptions.</p>
 
 <div class="prose">
 <h2>How a street gets its score</h2>
-<p>Underneath the city ranking is a score for every public road in 31 countries —
-67&nbsp;million of them. A street is scored on how it is actually built and used:
+<p>Underneath the city ranking is a score for every public road in 32 countries —
+74&nbsp;million of them. A street is scored on how it is actually built and used:
 its speed limit (including the legal default where none is signed), how much car
-traffic our model estimates it carries, how many lanes it has, whether heavy trucks
+traffic it carries (measured where counts exist, modelled elsewhere), how many lanes it has, whether heavy trucks
 are allowed, whether there is a protected bike track or just paint, how it is lit
 and surfaced, and what it forces a rider to do at junctions and crossings. All of it
 is read from open map data and our own data layers — no surveys, no opinions.</p>
@@ -415,7 +435,7 @@ the street does.</p>
 
 <div class="prose">
 <h2>Three questions, one rank</h2>
-<p>A city's rank comes from asking the same three questions of all 219 cities —
+<p>A city's rank comes from asking the same three questions of all {N} cities —
 weighted 40/30/30 — of the streets themselves.</p>
 </div>
 
@@ -435,12 +455,14 @@ find counts; reputation cannot help a city here.</p></div>
 <div class="dim-title">Can daily life happen on calm streets?</div>
 <p class="dim-body">For every populated square kilometre: what share of residents
 can reach daily destinations on a <i>connected</i> low-stress network? Calm islands
-that connect to nothing count for little — a network counts when it joins up.</p></div>
+that connect to nothing count for little — a network counts when it joins up. Streets just
+past the city limit count as links, so a harbour bridge or a neighbouring district does not cut
+a city in two.</p></div>
 </div>
 
 <div class="prose">
 <p>Each question is answered identically in every city, from one snapshot of the
-model. The three answers are then combined, the scale is set by the 219 themselves,
+model. The three answers are then combined, the scale is set by the {N} themselves,
 and the whole method is re-run 2,000 times with perturbed assumptions — the wobble
 from those re-runs is the interval printed beside every rank.</p>
 </div>
@@ -448,41 +470,40 @@ from those re-runs is the interval printed beside every rank.</p>
 <h2>Five results that will start arguments</h2>
 <ol class="arglist">
 <li><b>Stockholm is first — and we audited our own headline before publishing it.</b><br>
-No famous ranking puts Stockholm on the podium; the new Copenhagenize Index has it 26th. So we
-stress-tested our own result. It held: 64% of Stockholm's street network is explicitly signed at
-30&nbsp;km/h — Dutch levels (Amsterdam: 73%, Copenhagen: 6%) — its speed-limit tagging is 94%
-complete, its street density matches Copenhagen's, and it carries ~2,000&nbsp;km of separated
-cycleways, the largest such network of any peer. Its one soft spot is a very low modelled traffic
-load — plausibly real, given two decades of congestion charging — and even if we triple that
-penalty to the peer level, Stockholm still finishes on the podium. What we won't claim: that it
-beats Helsinki. The two are one point apart with overlapping intervals. Top of the leading
-cluster — that, the data supports.</li>
-<li><b>The cycling capitals are top-20, not top-3.</b><br>
-Amsterdam 9th. Paris 11th. Utrecht 14th. Copenhagen 17th. All world-class — and all measurably
-closer to the chasing pack than their reputations suggest. We don't score culture, mode share or
-ambition. On pure network risk, the gap has closed more than the folklore has.</li>
+No famous ranking puts Stockholm on the podium; the Copenhagenize Index has it 26th. When it first
+came out on top we stress-tested the result: most of its street network is signed at 30&nbsp;km/h,
+its speed-limit tagging is close to complete, and it has one of the largest separated cycleway
+networks of any peer city. On this edition's data its lead grew to {by_slug["stockholm"]["index"] - cities[1]["index"]:.1f}
+points. What we won't claim: that it is certainly first. Its interval is {by_slug["stockholm"]["rank_lo"]}–{by_slug["stockholm"]["rank_hi"]}, and
+{cities[1]["label"]}, {cities[2]["label"]}, {cities[3]["label"]} and {cities[4]["label"]} all reach the podium in the re-runs.
+Top of the leading cluster — that, the data supports.</li>
+<li><b>The cycling capitals earn their reputations.</b><br>
+{capitals}. All four are in the top 15. In the first edition Copenhagen sat 17th, because its
+official boundary leaves out the harbour and the enclave of Frederiksberg, which cut its bridges
+out of the network we measured. We fixed that for every city in this edition. We still don't score
+culture, mode share or ambition — only the streets.</li>
 <li><b>Nobody celebrates Vantaa and Espoo. The data does.</b><br>
-Helsinki's suburbs rank 6th and 8th, above almost every famous cycling city in Europe. Fame-based
-indices never test suburbs. A risk model doesn't know what a suburb is — it just measures the
-paths, and Finland built them everywhere.</li>
+Helsinki's suburbs rank {by_slug["vantaa"]["rank"]}th and {by_slug["espoo"]["rank"]}th, above most famous cycling cities in Europe.
+Fame-based indices never test suburbs. A risk model doesn't know what a suburb is — it just
+measures the paths, and Finland built them everywhere.</li>
 <li><b>Where rankings disagree, the injury data picks a side — ours.</b><br>
-Copenhagenize puts <span class="hotword">Bordeaux 9th</span>; we put it 116th — and Bordeaux has
-the <i>worst measured serious-injury rate of any French city in our outcome panel</i> (4.0 per 10M
-passages vs Paris's 1.9). They put <span class="hotword">Zurich 21st</span>; we put it 135th — and
-Zurich has the worst injury rate in the entire panel (7.4). Indices that reward policy momentum
-measure ambition. We measure asphalt. In both checkable disagreements, the crash data sides with
-the asphalt.</li>
+Copenhagenize puts <span class="hotword">Bordeaux 9th</span>; we put it {by_slug["bordeaux"]["rank"]}th — and Bordeaux has
+the <i>worst measured serious-injury rate of any French city in our outcome panel</i> ({ksi("bordeaux"):.1f} per 10M
+passages vs Paris's {ksi("paris"):.1f}). They put <span class="hotword">Zurich 21st</span>; we put it {by_slug["zurich"]["rank"]}th — and
+Zurich has {"the worst" if worst_ksi == "zurich" else "the second-worst"} injury rate in the entire panel ({ksi("zurich"):.1f}). Indices that reward policy
+momentum measure ambition. We measure asphalt. In both checkable disagreements, the crash data sides
+with the asphalt.</li>
 <li><b>The bottom of the table is where the work is.</b><br>
 {ro_last20} of the last 20 cities are Romanian — Bucharest ranks {by_slug["bucharest"]["rank"]},
-Timișoara {by_slug["timisoara"]["rank"]}, Brăila {N}th of {N}. That reads brutal, and it is. It is
-also, for the first time, <i>measured</i> — segment by segment, on the same scale as Stockholm.
+Timișoara {by_slug["timisoara"]["rank"]}, {ro_worst["label"]} {ro_worst["rank"]}th of {N}. That reads brutal, and it is. It is
+also <i>measured</i> — segment by segment, on the same scale as Stockholm.
 A gap you can measure is a gap you can close.</li>
 </ol>
 
 <h2>Us vs. the famous ranking</h2>
 <p>The Copenhagenize Index 2025 scores infrastructure <i>plus usage plus policy</i>. We score risk
-only. The two agree far more than they disagree (rank correlation 0.47 across their European top
-30; 19 of their 27 European cities are in our top 50) — and where they don't, see argument #4.</p>
+only. The two agree far more than they disagree (rank correlation {cph_rho:.2f} across their European top
+30; {cph_top50} of their 27 European cities are in our top 50) — and where they don't, see argument #4.</p>
 </div>
 
 <div class="figure">{scatter}
@@ -495,11 +516,11 @@ it supports the risk model in both.</p></div>
 <h2>Why you can trust it</h2>
 </div>
 <div class="tiles">
-<div class="tile"><div class="big">0.50</div><div class="what">Rank correlation with measured
-bicycle commuting share across 156 cities (Eurostat) — exactly the pre-registered validation
+<div class="tile"><div class="big">{edition.MODESHARE_RHO:.2f}</div><div class="what">Rank correlation with measured
+bicycle commuting share across {edition.MODESHARE_N} cities (Eurostat) — above the pre-registered validation
 target, on par with the best published city indices.</div></div>
-<div class="tile"><div class="big">0.79</div><div class="what">Serious-injury rate ratio per +10
-index points across 2.6&nbsp;billion measured cyclist passages (p&nbsp;&lt;&nbsp;0.001): higher-ranked
+<div class="tile"><div class="big">{edition.CRITERION_RR:.2f}</div><div class="what">Serious-injury rate ratio per +10
+index points across {panel_passages_bn:.1f}&nbsp;billion measured cyclist passages (p&nbsp;&lt;&nbsp;0.001): higher-ranked
 cities really do hurt fewer riders.</div></div>
 <div class="tile"><div class="big">2,000</div><div class="what">Re-runs of the entire method with
 perturbed weights and goalposts behind every rank. The interval printed next to each city is
@@ -555,7 +576,8 @@ lower assessed risk. Interval = 90% rank range over 2,000 re-runs.</p>
 <p><b>Method in one line:</b> every scored road segment of the production Defensive Pedal risk
 model (the one that plans real routes today) is aggregated per city across three pillars — street
 network risk, the risk of 210 simulated journeys, and low-stress accessibility — normalised on the
-{N}-city sample and stress-tested 2,000 times. Roads above 80&nbsp;km/h and carriageways with a
+{N}-city sample and stress-tested 2,000 times. Journeys and connectivity also use streets up to
+1&nbsp;km beyond the city limit. Roads above 80&nbsp;km/h and carriageways with a
 mandatory parallel path don't count against a city's streets; cities are official municipal
 boundaries.</p>
 <p>Full technical report, criterion analysis and every caveat:

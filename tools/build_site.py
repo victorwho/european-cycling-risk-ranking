@@ -9,6 +9,14 @@ SRC = os.path.join(HERE, "streets_not_reputations.html")
 SITE = os.path.join(HERE, "site")
 os.makedirs(SITE, exist_ok=True)
 BASE = "https://victorwho.github.io/european-cycling-risk-ranking/"
+sys.path.insert(0, HERE)
+import edition  # noqa: E402
+
+idx = json.load(open(os.path.join(edition.RESULTS, "index117.json"), encoding="utf-8"))
+cities = sorted(idx["cities"], key=lambda c: c["rank"])
+N = len(cities)
+by_slug = {c["slug"]: c for c in cities}
+def nth(n): return f"{n}{'th' if 10 <= n % 100 <= 20 else {1: 'st', 2: 'nd', 3: 'rd'}.get(n % 10, 'th')}"
 
 body = open(SRC, encoding="utf-8").read()
 
@@ -20,7 +28,7 @@ MAP_SECTION = """
 Click a dot — or search — for its rank, score and what drives it. Ctrl/⌘-scroll to zoom.</p>
 <input id="cityfind" list="citylist" placeholder="Type a city…" autocomplete="off">
 <datalist id="citylist"></datalist>
-<div id="map" role="application" aria-label="Interactive map of 219 ranked cities"></div>
+<div id="map" role="application" aria-label="Interactive map of __N__ ranked cities"></div>
 <style>
 #map { height: 540px; border:1px solid var(--rule); border-radius:10px; margin-top:10px; }
 @media (max-width:640px){ #map { height: 420px; } }
@@ -124,10 +132,11 @@ links = re.findall(r'<link[^>]+>', body)
 for frag in [title] + links:
     body = body.replace(frag, "", 1)
 
-DESC = ("219 European cities ranked by cycling risk, measured from 67 million road "
-        "segments and validated against 1,169 serious injuries. Stockholm first, "
-        "Amsterdam 9th — and where the famous rankings disagree, the injury data "
-        "picks a side.")
+body = body.replace("__N__", str(N))
+DESC = (f"{N} European cities ranked by cycling risk, measured from 74 million road "
+        f"segments and validated against 1,169 serious injuries. {cities[0]['label']} first, "
+        f"Amsterdam {nth(by_slug['amsterdam']['rank'])}, Copenhagen {nth(by_slug['copenhagen']['rank'])} — "
+        "and where the famous rankings disagree, the injury data picks a side.")
 
 doc = f"""<!doctype html>
 <html lang="en">
@@ -167,8 +176,6 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from matplotlib import font_manager
 
-idx = json.load(open(r"C:\dev\OSRM_Server\ccri_pilot\results200s_sens\index117.json", encoding="utf-8"))
-cities = sorted(idx["cities"], key=lambda c: c["rank"])
 DARKM = {1: ["#E2F5E0", "#B4E4B8", "#7BCA96", "#45A56C"],
          2: ["#FFF3C7", "#F8D45C", "#E4AC24", "#BD8A10"],
          3: ["#F5B7A4", "#E67F61", "#D14C36", "#A63524"]}
@@ -188,13 +195,13 @@ ax.set_ylim(0, 105)
 ax.axis("off")
 fig.text(0.045, 0.90, "STREETS, NOT REPUTATIONS", color="#FAFAF7",
          fontsize=44, fontweight="bold", family="Arial", va="top")
-fig.text(0.045, 0.745, "219 European cities, ranked by cycling risk — measured, not voted.",
+fig.text(0.045, 0.745, f"{N} European cities, ranked by cycling risk — measured, not voted.",
          color="#C9C9D6", fontsize=19, family="Arial", va="top")
 fig.text(0.045, 0.66, "Defensive Pedal Research · 2026", color="#F2C30F",
          fontsize=14, family="Arial", va="top")
-fig.text(0.045, 0.045, "1  Stockholm", color="#B4E4B8", fontsize=15,
+fig.text(0.045, 0.045, f"1  {cities[0]['label']}", color="#B4E4B8", fontsize=15,
          fontweight="bold", family="Arial")
-fig.text(0.955, 0.045, "219  Brăila", color="#9A9AA8", fontsize=15,
+fig.text(0.955, 0.045, f"{N}  {cities[-1]['label']}", color="#9A9AA8", fontsize=15,
          family="Arial", ha="right")
 fig.savefig(os.path.join(SITE, "social-card.png"), dpi=100,
             facecolor="#1A1A2E", bbox_inches=None)
